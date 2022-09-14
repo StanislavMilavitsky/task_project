@@ -1,0 +1,44 @@
+package by.milavitsky.task_poject.repository;
+
+import java.util.List;
+
+import by.milavitsky.task_poject.exception.RepositoryException;
+import by.milavitsky.task_poject.repository.entity.Project;
+
+public interface BaseRepository <T> {
+
+    /**
+     * Create an entity in database with fields
+     * @return entity
+     * @throws RepositoryException if have not been created
+     */
+    T create (T entity) throws RepositoryException;
+
+    /**
+     * Read an entity from database by id
+     * @param id field from entity
+     * @return entity tag
+     *@throws RepositoryException if entity have not been found
+     */
+    Project findById(Long id) throws RepositoryException;
+
+    /**
+     * Update entity in database without id and create date
+     * @return updated entity if update and null if entity has not been updated
+     * @throws RepositoryException if entity have not been update
+     */
+    T update (T entity) throws RepositoryException;
+
+    /**
+     * Delete entity from database by id
+     * @param id field
+     * @throws RepositoryException if entity have not been deleted
+     */
+    void delete(Long id) throws RepositoryException;
+
+    /**
+     * Find all in database
+     * @return list of entity
+     */
+    List<T> findAll();
+}
