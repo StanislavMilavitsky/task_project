@@ -3,10 +3,11 @@
 --changeset milavitsky:1
 create table projects
 (
-    project_id   bigserial   not null
+    id bigint not null
    constraint project_pk primary key,
-    title    varchar(20) not null,
-    project_description    varchar(100),
-    budget        bigserial,
-    date_of_start date
+    title varchar(20) not null,
+    project_description varchar(100),
+    budget bigserial,
+    date_of_start date,
+    is_deleted boolean
 );

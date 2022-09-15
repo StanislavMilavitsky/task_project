@@ -11,6 +11,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,4 +34,8 @@ public class Project implements Serializable {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.s")
     private LocalDate dateOfStart;
+
+    private Boolean isDeleted;
+
+    private List<Task> tasks;
 }
