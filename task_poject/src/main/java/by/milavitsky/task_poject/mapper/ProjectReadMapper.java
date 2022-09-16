@@ -2,9 +2,11 @@ package by.milavitsky.task_poject.mapper;
 
 import by.milavitsky.task_poject.dto.ProjectDTO;
 import by.milavitsky.task_poject.repository.entity.Project;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
+@Component
 public class ProjectReadMapper implements Mapper<ProjectDTO, Project> {
     @Override
     public ProjectDTO toDto(Project project) {

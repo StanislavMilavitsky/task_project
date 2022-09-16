@@ -10,6 +10,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class Project implements Serializable {
     private String projectDescription;
 
     @Positive(message = "Budget should be positive")
-    private Long budget;
+    private BigDecimal budget;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.s")
     private LocalDate dateOfStart;
