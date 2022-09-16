@@ -16,7 +16,7 @@ import java.io.Serializable;
 public class Task implements Serializable {
 
     @Positive(message = "Should be positive")
-    private Long taskId;
+    private Long id;
 
     @Size(min = 2, max = 100, message = "Title should be between 2 and 100 characters")
     private String taskDescription;

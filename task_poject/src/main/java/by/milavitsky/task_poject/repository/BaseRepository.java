@@ -20,7 +20,7 @@ public interface BaseRepository <T> {
      * @return entity tag
      *@throws RepositoryException if entity have not been found
      */
-    Project findById(Long id) throws RepositoryException;
+    T findById(Long id) throws RepositoryException;
 
     /**
      * Update entity in database without id and create date

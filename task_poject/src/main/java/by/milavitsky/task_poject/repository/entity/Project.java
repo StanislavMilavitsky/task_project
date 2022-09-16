@@ -20,7 +20,7 @@ import java.util.List;
 public class Project implements Serializable {
 
     @Positive(message = "Should be positive")
-    private Long projectId;
+    private Long id;
 
     @NotEmpty(message = "Title should not be empty")
     @Size(min = 2, max = 20, message = "Title should be between 2 and 30 characters")
@@ -34,6 +34,9 @@ public class Project implements Serializable {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.s")
     private LocalDate dateOfStart;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.s")
+    private LocalDate dateOfEnd;
 
     private Boolean isDeleted;
 

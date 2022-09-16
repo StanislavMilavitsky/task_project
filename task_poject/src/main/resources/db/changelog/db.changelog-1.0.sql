@@ -9,5 +9,6 @@ create table projects
     project_description varchar(100),
     budget bigserial,
     date_of_start date,
+    date_of_end date,
     is_deleted boolean
 );
