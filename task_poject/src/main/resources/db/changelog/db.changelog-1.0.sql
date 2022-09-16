@@ -7,7 +7,7 @@ create table projects
    constraint project_pk primary key,
     title varchar(20) not null,
     project_description varchar(100),
-    budget bigserial,
+    budget numeric (10,2),
     date_of_start date,
     date_of_end date,
     is_deleted boolean
