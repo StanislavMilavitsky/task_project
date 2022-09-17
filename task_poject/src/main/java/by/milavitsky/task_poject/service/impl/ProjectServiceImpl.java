@@ -74,4 +74,16 @@ public class ProjectServiceImpl implements ProjectService {
         List<Project> employeeDao = projectRepository.findAll();
         return employeeDao.stream().map(mapper::toDto).collect(Collectors.toList());
     }
+
+    @Override
+    public List<ProjectDTO> searchByNameOrDescription(String part) throws ServiceException {
+        try {
+            List<Project> projects = projectRepository.searchByNameOrDescription(part);
+            return projects.stream().map(mapper::toDto).collect(Collectors.toList());
+        } catch (RepositoryException exception) {
+            String exceptionMessage = String.format("Find project by word=%s exception!", part);
+            log.error(exceptionMessage, exception);
+            throw new ServiceException(exceptionMessage, exception);
+        }
+    }
 }

@@ -49,4 +49,12 @@ public interface ProjectService {
      * @return list of all projects
      */
     List<ProjectDTO> findAll();
+
+    /**
+     * Use method repository layer that find project by title or description
+     * @param part of word that must be searched
+     * @return list of found certificates
+     * @throws ServiceException if the certificates has not been
+     */
+    List<ProjectDTO> searchByNameOrDescription(String part) throws ServiceException;
 }

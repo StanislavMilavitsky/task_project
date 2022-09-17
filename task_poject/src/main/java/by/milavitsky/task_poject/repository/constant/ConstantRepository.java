@@ -7,6 +7,7 @@ public class ConstantRepository {
      */
     public static final String ID = "id";
     public static final String IS_DELETED = "is_deleted";
+    public static final String PERCENT = "%";
 
     /**
      * Constants for project entity

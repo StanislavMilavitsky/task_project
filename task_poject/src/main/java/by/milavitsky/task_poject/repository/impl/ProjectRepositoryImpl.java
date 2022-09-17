@@ -29,13 +29,13 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     private final JdbcTemplate jdbcTemplate;
 
     private SimpleJdbcInsert jdbcInsert;
-
     @PostConstruct
     private void postConstruct(){
         jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("projects")
                 .usingGeneratedKeyColumns(ID);
     }
+
 
     public static final String FIND_PROJECT_BY_ID_SQL = "SELECT pr.id, pr.title, pr.project_description, pr.budget," +
             " pr.date_of_start, pr.is_deleted, pr.date_of_end, t.id, t.task_description, t.is_deleted  FROM projects pr" +
@@ -54,6 +54,9 @@ public class ProjectRepositoryImpl implements ProjectRepository {
             " pr.date_of_start, pr.date_of_end, pr.is_deleted, t.id, t.task_description, t.is_deleted  FROM projects pr" +
             " JOIN project_has_task phs ON pr.id=phs.id_task " +
             "JOIN tasks t on phs.id_task = t.id;";
+
+    private static final String SELECT_BY_TITLE_OR_DESCRIPTION_SQL = "SELECT pr.id, pr.title, pr.project_description, pr.budget, pr.date_of_start," +
+            " pr.date_of_end, pr.is_deleted FROM projects pr WHERE pr.title LIKE ? OR pr.project_description LIKE ?";
 
     @Override
     public Project create(Project project) throws RepositoryException {
@@ -121,5 +124,17 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     @Override
     public List<Project> findAll() {
         return jdbcTemplate.query(FIND_ALL_PROJECTS_SQL,new BeanPropertyRowMapper<>(Project.class));
+    }
+
+    @Override
+    public List<Project> searchByNameOrDescription(String part) throws RepositoryException {
+        try{
+            String sqlPart = PERCENT + part + PERCENT;
+            return jdbcTemplate.query(SELECT_BY_TITLE_OR_DESCRIPTION_SQL, new BeanPropertyRowMapper<>(Project.class), sqlPart, sqlPart);
+        } catch (DataAccessException exception){
+            String exceptionMessage = String.format("Find project by word=%s exception sql!", part);
+            log.error(exceptionMessage, exception);
+            throw new RepositoryException(exceptionMessage, exception);
+        }
     }
 }

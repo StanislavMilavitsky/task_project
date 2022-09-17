@@ -12,6 +12,7 @@ import by.milavitsky.task_poject.exception.ServiceException;
 import by.milavitsky.task_poject.exception.ControllerException;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Project Controller
@@ -103,6 +104,22 @@ public class ProjectController {
         }
 
     }
+
+    /**
+     * Search project by title or description part.
+     *
+     * @param part the part
+     * @return the response entity
+     * @throws ServiceException the service exception
+     */
+    @GetMapping("/search-part")
+    public ResponseEntity<List<ProjectDTO>> searchByNameOrDesc(@RequestParam(name = "part") String part)
+            throws ServiceException {
+        List<ProjectDTO> projectDTO = projectService.searchByNameOrDescription(part);
+        return ResponseEntity.ok(projectDTO);
+    }
+
+
 
     /**
      * Get default message by validate exception
