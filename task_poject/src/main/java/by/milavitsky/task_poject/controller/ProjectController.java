@@ -132,7 +132,29 @@ public class ProjectController {
         return ResponseEntity.ok(projectDTO);
     }
 
+    /**
+     * Sort projects by date of start.
+     *
+     * @return the response entity
+     * @throws ServiceException the service exception
+     */
+    @GetMapping("/sort-by-date-start")
+    public ResponseEntity<List<ProjectDTO>> sortByDateStart(@RequestParam(name = "sort") TableColumn.SortType sortType) throws ServiceException {
+        List<ProjectDTO> projectDTO = projectService.sortByDateStart(sortType);
+        return ResponseEntity.ok(projectDTO);
+    }
 
+    /**
+     * Sort projects by date of end.
+     *
+     * @return the response entity
+     * @throws ServiceException the service exception
+     */
+    @GetMapping("/sort-by-date-end")
+    public ResponseEntity<List<ProjectDTO>> sortByDateEnd(@RequestParam(name = "sort") TableColumn.SortType sortType) throws ServiceException {
+        List<ProjectDTO> projectDTO = projectService.sortByDateEnd(sortType);
+        return ResponseEntity.ok(projectDTO);
+    }
 
 
     /**

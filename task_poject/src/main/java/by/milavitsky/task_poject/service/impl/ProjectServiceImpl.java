@@ -27,7 +27,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectDTO findById(Long id) throws ServiceException {
         try {
-            return  mapper.toDTO(projectRepository.findById(id));
+            return mapper.toDTO(projectRepository.findById(id));
         } catch (RepositoryException exception) {
             String exceptionMessage = String.format("Cant find project by id=%d !", id);
             log.error(exceptionMessage, exception);
@@ -37,7 +37,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDTO create(ProjectDTO projectDTO) throws ServiceException {
-        try{
+        try {
             Project project = mapper.fromDTO(projectDTO);
             return mapper.toDTO(projectRepository.create(project));
         } catch (RepositoryException exception) {
@@ -49,7 +49,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDTO update(ProjectDTO projectDTO) throws ServiceException {
-        try{
+        try {
             Project project = projectRepository.update(mapper.fromDTO(projectDTO));
             return mapper.toDTO(project);
         } catch (RepositoryException exception) {
@@ -61,7 +61,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void deleteById(Long id) throws ServiceException {
-        try{
+        try {
             projectRepository.delete(id);
         } catch (RepositoryException exception) {
             String exceptionMessage = String.format("Delete project by id=%d exception!", id);
@@ -95,6 +95,30 @@ public class ProjectServiceImpl implements ProjectService {
             return projects.stream().map(mapper::toDTO).collect(Collectors.toList());
         } catch (RepositoryException exception) {
             String exceptionMessage = "Sort projects by title";
+            log.error(exceptionMessage, exception);
+            throw new ServiceException(exceptionMessage, exception);
+        }
+    }
+
+    @Override
+    public List<ProjectDTO> sortByDateStart(TableColumn.SortType sortType) throws ServiceException {
+        try {
+            List<Project> projects = projectRepository.sortByDateOfStart(sortType);
+            return projects.stream().map(mapper::toDTO).collect(Collectors.toList());
+        } catch (RepositoryException exception) {
+            String exceptionMessage = "Sort projects by date of start";
+            log.error(exceptionMessage, exception);
+            throw new ServiceException(exceptionMessage, exception);
+        }
+    }
+
+    @Override
+    public List<ProjectDTO> sortByDateEnd(TableColumn.SortType sortType) throws ServiceException {
+        try {
+            List<Project> projects = projectRepository.sortByDateOfEnd(sortType);
+            return projects.stream().map(mapper::toDTO).collect(Collectors.toList());
+        } catch (RepositoryException exception) {
+            String exceptionMessage = "Sort projects by date of start";
             log.error(exceptionMessage, exception);
             throw new ServiceException(exceptionMessage, exception);
         }

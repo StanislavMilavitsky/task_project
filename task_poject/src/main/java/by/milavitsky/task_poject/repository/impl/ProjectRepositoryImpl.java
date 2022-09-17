@@ -59,7 +59,13 @@ public class ProjectRepositoryImpl implements ProjectRepository {
             " pr.date_of_end, pr.is_deleted FROM projects pr WHERE pr.title LIKE ? OR pr.project_description LIKE ?";
 
     private static final String SORT_BY_TITLE_SQL = "SELECT pr.id, title, project_description, budget, date_of_start, date_of_end, is_deleted" +
-            " FROM projects pr ORDER BY pr.title ";
+            " FROM projects pr ORDER BY pr.title;";
+
+    private static final String SORT_BY_DATE_SQL_START = "SELECT pr.id, title, project_description, budget, date_of_start, date_of_end, is_deleted " +
+            "FROM projects pr ORDER BY pr.date_of_start;";
+
+    private static final String SORT_BY_DATE_SQL_END = "SELECT pr.id, title, project_description, budget, date_of_start, date_of_end, is_deleted " +
+            "FROM projects pr ORDER BY pr.date_of_end;";
 
     @Override
     public Project create(Project project) throws RepositoryException {
@@ -152,6 +158,36 @@ public class ProjectRepositoryImpl implements ProjectRepository {
             return jdbcTemplate.query(builder.toString(), new BeanPropertyRowMapper<>(Project.class));
         } catch (DataAccessException exception) {
             String exceptionMessage = "Sort projects by title exception sql";
+            log.error(exceptionMessage, exception);
+            throw new RepositoryException(exceptionMessage, exception);
+        }
+    }
+
+    @Override
+    public List<Project> sortByDateOfStart(TableColumn.SortType sortType) throws RepositoryException {
+        try{
+            StringBuilder builder = new StringBuilder(SORT_BY_DATE_SQL_START);
+            if (sortType == TableColumn.SortType.DESCENDING){
+                builder.append(TableColumn.SortType.DESCENDING.name());
+            }
+            return jdbcTemplate.query(builder.toString(), new BeanPropertyRowMapper<>(Project.class));
+        } catch (DataAccessException exception){
+            String exceptionMessage = "Sort project by date of start exception sql";
+            log.error(exceptionMessage, exception);
+            throw new RepositoryException(exceptionMessage, exception);
+        }
+    }
+
+    @Override
+    public List<Project> sortByDateOfEnd(TableColumn.SortType sortType) throws RepositoryException {
+        try{
+            StringBuilder builder = new StringBuilder(SORT_BY_DATE_SQL_END);
+            if (sortType == TableColumn.SortType.DESCENDING){
+                builder.append(TableColumn.SortType.DESCENDING.name());
+            }
+            return jdbcTemplate.query(builder.toString(), new BeanPropertyRowMapper<>(Project.class));
+        } catch (DataAccessException exception){
+            String exceptionMessage = "Sort project by date of end exception sql";
             log.error(exceptionMessage, exception);
             throw new RepositoryException(exceptionMessage, exception);
         }
