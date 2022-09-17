@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.mockito.Mock;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -22,6 +21,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.lenient;
 
@@ -33,8 +34,8 @@ class ProjectServiceImplTest {
      */
 
     @Mock
-    ProjectService projectService;
     ProjectRepository projectRepository;
+    ProjectService projectService;
     Project project;
     ProjectDTO projectDTO;
     Mapper mapper;
@@ -71,22 +72,73 @@ class ProjectServiceImplTest {
     }
 
     @Test
-    void testFindByIdNegative() {
+    void testFindByIdNegative() throws RepositoryException, ServiceException {
+        lenient().when(projectRepository.findById(anyLong())).thenReturn(project);
+        ProjectDTO actual = projectService.findById(2L);
+        assertNotEquals(projectDTO, actual);
     }
 
     @Test
-    void create() {
+    void testFindException() throws RepositoryException {
+        lenient().when(projectRepository.findById(anyLong())).thenThrow(RepositoryException.class);
+        assertThrows(ServiceException.class, () -> projectService.findById(1L));
     }
 
     @Test
-    void update() {
+    void testCreatePositive() throws ServiceException, RepositoryException {
+        lenient().when(projectRepository.create(any(Project.class))).thenReturn(project);
+        ProjectDTO actual = projectService.create(projectDTO);
+        assertEquals(projectDTO, actual);
     }
 
     @Test
-    void deleteById() {
+    void testCreateNegative() throws ServiceException, RepositoryException {
+        lenient().when(projectRepository.create(any(Project.class))).thenReturn(project);
+        ProjectDTO actual = projectService.create(projectDTO);
+        assertNotEquals(new ProjectDTO(), actual);
     }
 
     @Test
-    void findAll() {
+    void testCreateException() throws RepositoryException {
+        lenient().when(projectRepository.create(any(Project.class))).thenThrow(RepositoryException.class);
+        assertThrows(ServiceException.class, () -> projectService.create(projectDTO));
     }
+
+    @Test
+    void testUpdatePositive() throws ServiceException, RepositoryException {
+        lenient().when(projectRepository.update(any(Project.class))).thenReturn(project);
+        lenient().when((projectRepository.findById(anyLong()))).thenReturn(project);
+        ProjectDTO actual = projectService.update(projectDTO);
+        assertEquals(projectDTO, actual);
+    }
+
+    @Test
+    void testUpdateNegative() throws ServiceException, RepositoryException {
+        lenient().when(projectRepository.update(any(Project.class))).thenReturn(project);
+        lenient().when((projectRepository.findById(anyLong()))).thenReturn(project);
+        ProjectDTO actual = projectService.update(projectDTO);
+        assertNotEquals(new ProjectDTO(), actual);
+    }
+
+    @Test
+    void testUpdateException() throws RepositoryException {
+        lenient().when(projectRepository.update(any(Project.class))).thenThrow(RepositoryException.class);
+        assertThrows(ServiceException.class, () -> projectService.update(projectDTO));
+    }
+
+  /*  @Test
+    void testDeleteByIdPositive() throws ServiceException, RepositoryException {
+        lenient().when(projectRepository.delete(anyLong())).thenAnswer(project.getIsDeleted());
+        projectService.deleteById(1L);
+        Boolean actual = project.getIsDeleted();
+        assertEquals(true, actual);
+    }
+
+    @Test
+    void testDeleteByIdNegative() throws RepositoryException, ServiceException {
+       // lenient().when(projectRepository.delete(anyLong())).thenReturn(1L);
+        projectService.deleteById(1L);
+        Boolean actual = project.getIsDeleted();
+        assertNotEquals(false, actual);
+    }*/
 }

@@ -101,7 +101,12 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
     @Override
     public void delete(Long id) throws RepositoryException { try{
-        jdbcTemplate.update(DELETE_PROJECT_BY_ID_SQL, id);
+        int rows = jdbcTemplate.update(DELETE_PROJECT_BY_ID_SQL, id);
+        if (rows < 0) {
+            String message = String.format("Entity by id=%d was deleted!", id);
+            log.error(message);
+            throw new RepositoryException(message);
+        }
     } catch (DataAccessException exception){
         String exceptionMessage = String.format("Delete project by id=%d exception sql!", id);
         log.error(exceptionMessage, exception);
