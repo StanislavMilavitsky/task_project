@@ -3,23 +3,15 @@ package by.milavitsky.task_poject.service.impl;
 import by.milavitsky.task_poject.dto.ProjectDTO;
 import by.milavitsky.task_poject.exception.RepositoryException;
 import by.milavitsky.task_poject.exception.ServiceException;
-import by.milavitsky.task_poject.mapper.Mapper;
-import by.milavitsky.task_poject.mapper.ProjectReadMapper;
-import by.milavitsky.task_poject.repository.ProjectRepository;
+
 import by.milavitsky.task_poject.repository.TaskRepository;
-import by.milavitsky.task_poject.repository.entity.Project;
 import by.milavitsky.task_poject.repository.entity.Task;
-import by.milavitsky.task_poject.service.ProjectService;
+
 import by.milavitsky.task_poject.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
