@@ -16,7 +16,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 /**
- * Project Controller
+ * Project Rest Controller
  */
 
 @Slf4j

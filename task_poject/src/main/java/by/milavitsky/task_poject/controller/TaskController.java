@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 /**
- * Task controller.
+ * Task Rest Controller.
  */
 @Slf4j
 @RestController
