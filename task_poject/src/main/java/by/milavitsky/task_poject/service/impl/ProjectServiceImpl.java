@@ -7,6 +7,7 @@ import by.milavitsky.task_poject.mapper.Mapper;
 import by.milavitsky.task_poject.repository.ProjectRepository;
 import by.milavitsky.task_poject.repository.entity.Project;
 import by.milavitsky.task_poject.service.ProjectService;
+import javafx.scene.control.TableColumn;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectDTO findById(Long id) throws ServiceException {
         try {
-            return  mapper.toDto(projectRepository.findById(id));
+            return  mapper.toDTO(projectRepository.findById(id));
         } catch (RepositoryException exception) {
             String exceptionMessage = String.format("Cant find project by id=%d !", id);
             log.error(exceptionMessage, exception);
@@ -37,8 +38,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectDTO create(ProjectDTO projectDTO) throws ServiceException {
         try{
-            Project project = mapper.fromDto(projectDTO);
-            return mapper.toDto(projectRepository.create(project));
+            Project project = mapper.fromDTO(projectDTO);
+            return mapper.toDTO(projectRepository.create(project));
         } catch (RepositoryException exception) {
             String exceptionMessage = String.format("Add project by title= %s exception!", projectDTO.getTitle());
             log.error(exceptionMessage, exception);
@@ -49,8 +50,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectDTO update(ProjectDTO projectDTO) throws ServiceException {
         try{
-            Project project = projectRepository.update(mapper.fromDto(projectDTO));
-            return mapper.toDto(project);
+            Project project = projectRepository.update(mapper.fromDTO(projectDTO));
+            return mapper.toDTO(project);
         } catch (RepositoryException exception) {
             String exceptionMessage = String.format("Update project by title= %s exception!", projectDTO.getTitle());
             log.error(exceptionMessage, exception);
@@ -72,16 +73,28 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<ProjectDTO> findAll() {
         List<Project> employeeDao = projectRepository.findAll();
-        return employeeDao.stream().map(mapper::toDto).collect(Collectors.toList());
+        return employeeDao.stream().map(mapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
-    public List<ProjectDTO> searchByNameOrDescription(String part) throws ServiceException {
+    public List<ProjectDTO> searchByTitleOrDescription(String part) throws ServiceException {
         try {
-            List<Project> projects = projectRepository.searchByNameOrDescription(part);
-            return projects.stream().map(mapper::toDto).collect(Collectors.toList());
+            List<Project> projects = projectRepository.searchByTitleOrDescription(part);
+            return projects.stream().map(mapper::toDTO).collect(Collectors.toList());
         } catch (RepositoryException exception) {
             String exceptionMessage = String.format("Find project by word=%s exception!", part);
+            log.error(exceptionMessage, exception);
+            throw new ServiceException(exceptionMessage, exception);
+        }
+    }
+
+    @Override
+    public List<ProjectDTO> sortByTitle(TableColumn.SortType sortType) throws ServiceException {
+        try {
+            List<Project> projects = projectRepository.sortByTitle(sortType);
+            return projects.stream().map(mapper::toDTO).collect(Collectors.toList());
+        } catch (RepositoryException exception) {
+            String exceptionMessage = "Sort projects by title";
             log.error(exceptionMessage, exception);
             throw new ServiceException(exceptionMessage, exception);
         }

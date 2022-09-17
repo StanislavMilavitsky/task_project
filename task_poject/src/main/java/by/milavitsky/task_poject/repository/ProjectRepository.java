@@ -2,6 +2,7 @@ package by.milavitsky.task_poject.repository;
 
 import by.milavitsky.task_poject.exception.RepositoryException;
 import by.milavitsky.task_poject.repository.entity.Project;
+import javafx.scene.control.TableColumn;
 
 import java.util.List;
 
@@ -11,10 +12,18 @@ import java.util.List;
 public interface ProjectRepository extends BaseRepository <Project> {
 
     /**
-     * Search project in database by title or description
+     * Search projects in database by title or description
      * @param part it is String value of word
-     * @return list of gift certificates
-     * @throws by.milavitsky.task_poject.exception.RepositoryException if certificate have not been found
+     * @return list of projects
+     * @throws RepositoryException if projects have not been found
      */
-    List<Project> searchByNameOrDescription(String part) throws RepositoryException;
+    List<Project> searchByTitleOrDescription(String part) throws RepositoryException;
+
+    /**
+     * Select entity from database and sort them by title
+     * @param sortType is type from enum class TableSortType
+     * @return list of sorted entity
+     * @throws RepositoryException if projects have not been sorted
+     */
+    List<Project> sortByTitle(TableColumn.SortType sortType) throws RepositoryException;
 }

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Component
 public class ProjectReadMapper implements Mapper<ProjectDTO, Project> {
     @Override
-    public ProjectDTO toDto(Project project) {
+    public ProjectDTO toDTO(Project project) {
         return new ProjectDTO(
                 project.getId(),
                 project.getTitle(),
@@ -23,7 +23,7 @@ public class ProjectReadMapper implements Mapper<ProjectDTO, Project> {
     }
 
     @Override
-    public Project fromDto(ProjectDTO projectDTO) {
+    public Project fromDTO(ProjectDTO projectDTO) {
         return new Project(
                 projectDTO.getId(),
                 projectDTO.getTitle(),

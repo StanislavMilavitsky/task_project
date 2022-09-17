@@ -2,6 +2,7 @@ package by.milavitsky.task_poject.service;
 
 import by.milavitsky.task_poject.dto.ProjectDTO;
 import by.milavitsky.task_poject.exception.ServiceException;
+import javafx.scene.control.TableColumn;
 
 import java.util.List;
 
@@ -53,8 +54,16 @@ public interface ProjectService {
     /**
      * Use method repository layer that find project by title or description
      * @param part of word that must be searched
-     * @return list of found certificates
-     * @throws ServiceException if the certificates has not been
+     * @return list of found projects
+     * @throws ServiceException if the projects has not been
      */
-    List<ProjectDTO> searchByNameOrDescription(String part) throws ServiceException;
+    List<ProjectDTO> searchByTitleOrDescription(String part) throws ServiceException;
+
+    /**
+     * Use method of repository layer and sort by title
+     * @param sortType enum value of Class TableSortType
+     * @return sorted list
+     * @throws ServiceException if the projects has not been
+     */
+    List<ProjectDTO> sortByTitle(TableColumn.SortType sortType) throws ServiceException;
 }

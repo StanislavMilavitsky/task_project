@@ -3,6 +3,7 @@ package by.milavitsky.task_poject.repository.impl;
 import by.milavitsky.task_poject.exception.RepositoryException;
 import by.milavitsky.task_poject.repository.ProjectRepository;
 import by.milavitsky.task_poject.repository.entity.Project;
+import javafx.scene.control.TableColumn;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -30,12 +31,11 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
     private SimpleJdbcInsert jdbcInsert;
     @PostConstruct
-    private void postConstruct(){
+    private void postConstruct() {
         jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("projects")
                 .usingGeneratedKeyColumns(ID);
     }
-
 
     public static final String FIND_PROJECT_BY_ID_SQL = "SELECT pr.id, pr.title, pr.project_description, pr.budget," +
             " pr.date_of_start, pr.is_deleted, pr.date_of_end, t.id, t.task_description, t.is_deleted  FROM projects pr" +
@@ -58,9 +58,12 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     private static final String SELECT_BY_TITLE_OR_DESCRIPTION_SQL = "SELECT pr.id, pr.title, pr.project_description, pr.budget, pr.date_of_start," +
             " pr.date_of_end, pr.is_deleted FROM projects pr WHERE pr.title LIKE ? OR pr.project_description LIKE ?";
 
+    private static final String SORT_BY_TITLE_SQL = "SELECT pr.id, title, project_description, budget, date_of_start, date_of_end, is_deleted" +
+            " FROM projects pr ORDER BY pr.title ";
+
     @Override
     public Project create(Project project) throws RepositoryException {
-        try{
+        try {
             Map<String, Object> parameters = new HashMap<>();
             parameters.put(TITLE, project.getTitle());
             parameters.put(PROJECT_DESCRIPTION, project.getProjectDescription());
@@ -72,7 +75,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
             Number id = jdbcInsert.executeAndReturnKey(parameters);
             project.setId(id.longValue());
             return project;
-        } catch (DataAccessException exception){
+        } catch (DataAccessException exception) {
             String exceptionMessage = String.format("Create project by title name=%s exception sql!", project.getTitle());
             log.error(exceptionMessage, exception);
             throw new RepositoryException(exceptionMessage, exception);
@@ -83,7 +86,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     public Project findById(Long id) throws RepositoryException {
         try {
             return jdbcTemplate.queryForObject(FIND_PROJECT_BY_ID_SQL, new BeanPropertyRowMapper<>(Project.class), id);
-        } catch (DataAccessException exception){
+        } catch (DataAccessException exception) {
             String exceptionMessage = String.format("Read project by id=%d exception sql!", id);
             log.error(exceptionMessage, exception);
             throw new RepositoryException(exceptionMessage, exception);
@@ -103,18 +106,19 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public void delete(Long id) throws RepositoryException { try{
-        int rows = jdbcTemplate.update(DELETE_PROJECT_BY_ID_SQL, id);
-        if (rows < 0) {
-            String message = String.format("Entity by id=%d was deleted!", id);
-            log.error(message);
-            throw new RepositoryException(message);
+    public void delete(Long id) throws RepositoryException {
+        try {
+            int rows = jdbcTemplate.update(DELETE_PROJECT_BY_ID_SQL, id);
+            if (rows < 0) {
+                String message = String.format("Entity by id=%d was deleted!", id);
+                log.error(message);
+                throw new RepositoryException(message);
+            }
+        } catch (DataAccessException exception) {
+            String exceptionMessage = String.format("Delete project by id=%d exception sql!", id);
+            log.error(exceptionMessage, exception);
+            throw new RepositoryException(exceptionMessage, exception);
         }
-    } catch (DataAccessException exception){
-        String exceptionMessage = String.format("Delete project by id=%d exception sql!", id);
-        log.error(exceptionMessage, exception);
-        throw new RepositoryException(exceptionMessage, exception);
-    }
     }
 
     //SELECT pr.id, pr.title, pr.project_description, pr.budget," +
@@ -123,16 +127,31 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     //            "JOIN tasks t on phs.id_task = t.id;
     @Override
     public List<Project> findAll() {
-        return jdbcTemplate.query(FIND_ALL_PROJECTS_SQL,new BeanPropertyRowMapper<>(Project.class));
+        return jdbcTemplate.query(FIND_ALL_PROJECTS_SQL, new BeanPropertyRowMapper<>(Project.class));
     }
 
     @Override
-    public List<Project> searchByNameOrDescription(String part) throws RepositoryException {
-        try{
+    public List<Project> searchByTitleOrDescription(String part) throws RepositoryException {
+        try {
             String sqlPart = PERCENT + part + PERCENT;
             return jdbcTemplate.query(SELECT_BY_TITLE_OR_DESCRIPTION_SQL, new BeanPropertyRowMapper<>(Project.class), sqlPart, sqlPart);
-        } catch (DataAccessException exception){
+        } catch (DataAccessException exception) {
             String exceptionMessage = String.format("Find project by word=%s exception sql!", part);
+            log.error(exceptionMessage, exception);
+            throw new RepositoryException(exceptionMessage, exception);
+        }
+    }
+
+    @Override
+    public List<Project> sortByTitle(TableColumn.SortType sortType) throws RepositoryException {
+        try {
+            StringBuilder builder = new StringBuilder(SORT_BY_TITLE_SQL);
+            if (sortType == TableColumn.SortType.DESCENDING) {
+                builder.append(TableColumn.SortType.DESCENDING.name());
+            }
+            return jdbcTemplate.query(builder.toString(), new BeanPropertyRowMapper<>(Project.class));
+        } catch (DataAccessException exception) {
+            String exceptionMessage = "Sort projects by title exception sql";
             log.error(exceptionMessage, exception);
             throw new RepositoryException(exceptionMessage, exception);
         }

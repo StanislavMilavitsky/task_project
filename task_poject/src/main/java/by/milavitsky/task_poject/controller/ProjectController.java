@@ -2,6 +2,7 @@ package by.milavitsky.task_poject.controller;
 
 import by.milavitsky.task_poject.dto.ProjectDTO;
 import by.milavitsky.task_poject.service.ProjectService;
+import javafx.scene.control.TableColumn;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -115,9 +116,22 @@ public class ProjectController {
     @GetMapping("/search-part")
     public ResponseEntity<List<ProjectDTO>> searchByNameOrDesc(@RequestParam(name = "part") String part)
             throws ServiceException {
-        List<ProjectDTO> projectDTO = projectService.searchByNameOrDescription(part);
+        List<ProjectDTO> projectDTO = projectService.searchByTitleOrDescription(part);
         return ResponseEntity.ok(projectDTO);
     }
+
+    /**
+     * Sort project by title.
+     *
+     * @return the response entity
+     * @throws ServiceException the service exception
+     */
+    @GetMapping("/sort-by-title")
+    public ResponseEntity<List<ProjectDTO>> sortByName(@RequestParam(name = "sort") TableColumn.SortType sortType) throws ServiceException {
+        List<ProjectDTO> projectDTO = projectService.sortByTitle(sortType);
+        return ResponseEntity.ok(projectDTO);
+    }
+
 
 
 
