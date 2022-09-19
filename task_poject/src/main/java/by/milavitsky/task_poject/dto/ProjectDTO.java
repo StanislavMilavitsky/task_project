@@ -1,6 +1,6 @@
 package by.milavitsky.task_poject.dto;
 
-import by.milavitsky.task_poject.repository.entity.Task;
+import by.milavitsky.task_poject.entity.Task;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

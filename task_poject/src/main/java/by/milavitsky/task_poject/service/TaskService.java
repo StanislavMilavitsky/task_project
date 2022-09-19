@@ -1,7 +1,7 @@
 package by.milavitsky.task_poject.service;
 
 import by.milavitsky.task_poject.exception.ServiceException;
-import by.milavitsky.task_poject.repository.entity.Task;
+import by.milavitsky.task_poject.entity.Task;
 
 import java.util.List;
 

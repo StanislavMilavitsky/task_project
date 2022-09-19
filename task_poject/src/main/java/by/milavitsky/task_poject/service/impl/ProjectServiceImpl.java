@@ -5,7 +5,7 @@ import by.milavitsky.task_poject.exception.RepositoryException;
 import by.milavitsky.task_poject.exception.ServiceException;
 import by.milavitsky.task_poject.mapper.Mapper;
 import by.milavitsky.task_poject.repository.ProjectRepository;
-import by.milavitsky.task_poject.repository.entity.Project;
+import by.milavitsky.task_poject.entity.Project;
 import by.milavitsky.task_poject.service.ProjectService;
 import javafx.scene.control.TableColumn;
 import lombok.RequiredArgsConstructor;

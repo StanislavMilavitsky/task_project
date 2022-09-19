@@ -2,7 +2,7 @@ package by.milavitsky.task_poject.repository.impl;
 
 import by.milavitsky.task_poject.exception.RepositoryException;
 import by.milavitsky.task_poject.repository.ProjectRepository;
-import by.milavitsky.task_poject.repository.entity.Project;
+import by.milavitsky.task_poject.entity.Project;
 import javafx.scene.control.TableColumn;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +30,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     private final JdbcTemplate jdbcTemplate;
 
     private SimpleJdbcInsert jdbcInsert;
+
     @PostConstruct
     private void postConstruct() {
         jdbcInsert = new SimpleJdbcInsert(dataSource)

@@ -2,7 +2,7 @@ package by.milavitsky.task_poject.controller;
 
 import by.milavitsky.task_poject.exception.ControllerException;
 import by.milavitsky.task_poject.exception.ServiceException;
-import by.milavitsky.task_poject.repository.entity.Task;
+import by.milavitsky.task_poject.entity.Task;
 import by.milavitsky.task_poject.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

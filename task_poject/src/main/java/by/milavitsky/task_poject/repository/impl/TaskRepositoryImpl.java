@@ -2,7 +2,7 @@ package by.milavitsky.task_poject.repository.impl;
 
 import by.milavitsky.task_poject.exception.RepositoryException;
 import by.milavitsky.task_poject.repository.TaskRepository;
-import by.milavitsky.task_poject.repository.entity.Task;
+import by.milavitsky.task_poject.entity.Task;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;

@@ -1,4 +1,4 @@
-package by.milavitsky.task_poject.repository.entity;
+package by.milavitsky.task_poject.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

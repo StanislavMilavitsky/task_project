@@ -1,7 +1,7 @@
 package by.milavitsky.task_poject.repository;
 
 import by.milavitsky.task_poject.exception.RepositoryException;
-import by.milavitsky.task_poject.repository.entity.Project;
+import by.milavitsky.task_poject.entity.Project;
 import javafx.scene.control.TableColumn;
 
 import java.util.List;

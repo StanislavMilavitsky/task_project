@@ -23,4 +23,12 @@ public class ConstantRepository {
      *  Constants for task entity
      */
     public static final String TASK_DESCRIPTION = "task_description";
+
+    /**
+     *  Constants for user entity
+     */
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+    public static final String DATE_OF_REGISTRATION = "date_of_registration";
+    public static final String ROLE = "role";
 }

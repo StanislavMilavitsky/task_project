@@ -15,13 +15,13 @@ import by.milavitsky.task_poject.exception.ControllerException;
 import javax.validation.Valid;
 import java.util.List;
 
+
 /**
  * Project Rest Controller
  */
-
 @Slf4j
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/projects")
 public class ProjectController {
 
@@ -168,3 +168,5 @@ public class ProjectController {
     }
 
 }
+
+

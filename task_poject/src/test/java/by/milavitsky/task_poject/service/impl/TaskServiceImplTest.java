@@ -5,7 +5,7 @@ import by.milavitsky.task_poject.exception.RepositoryException;
 import by.milavitsky.task_poject.exception.ServiceException;
 
 import by.milavitsky.task_poject.repository.TaskRepository;
-import by.milavitsky.task_poject.repository.entity.Task;
+import by.milavitsky.task_poject.entity.Task;
 
 import by.milavitsky.task_poject.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
