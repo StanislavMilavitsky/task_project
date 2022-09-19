@@ -42,4 +42,10 @@ public interface ProjectRepository extends BaseRepository <Project> {
      * @throws RepositoryException if projects have not been sorted
      */
     List<Project> sortByDateOfEnd(TableColumn.SortType sortType) throws RepositoryException;
+
+    /**
+     * Get count of projects at database
+     * @return count
+     */
+    long countOfProjects();
 }

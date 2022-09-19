@@ -24,7 +24,6 @@ public class TaskController {
 
     private TaskService taskService;
 
-
     /**
      * Find task by id.
      *

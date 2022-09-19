@@ -4,7 +4,6 @@ import by.milavitsky.task_poject.entity.User;
 import by.milavitsky.task_poject.exception.ControllerException;
 import by.milavitsky.task_poject.exception.IncorrectArgumentException;
 import by.milavitsky.task_poject.exception.ServiceException;
-import by.milavitsky.task_poject.exception.NotExistEntityException;
 import by.milavitsky.task_poject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 public class UserController extends CommonController<User> {
+
     private final UserService userService;
 
     /**
@@ -35,11 +35,10 @@ public class UserController extends CommonController<User> {
      * @param id user
      * @return entity user
      * @throws ServiceException if cant find user
-     * @throws NotExistEntityException if user have not been exist
      * @throws ControllerException if negative id
      */
     @GetMapping("/{id}")
-    public ResponseEntity<User> findById(Long id) throws ControllerException, ServiceException {
+    public ResponseEntity<User> findById(@PathVariable(name = "id") Long id) throws ControllerException, ServiceException {
         if(id > 0) {
             User user = userService.findById(id);
             return ResponseEntity.ok(user);

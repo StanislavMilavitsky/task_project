@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Long id) throws ServiceException {
         try {
-            return  userRepository.findById(id);
+            return userRepository.findById(id);
         } catch (RepositoryException exception) {
             String exceptionMessage = String.format("Cant find user by id=%d !", id);
             log.error(exceptionMessage, exception);
@@ -67,11 +67,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAll() {
-        return null;
-    }
-
-    @Override
     public List<User> findAll(int page, int size) throws ServiceException, IncorrectArgumentException {
         try {
             long count = count();
@@ -87,7 +82,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public long count() throws ServiceException {
         try {
-            return userRepository.getCountOfUsers();
+            return userRepository.countOfUsers();
         } catch (DataAccessException exception) {
             String exceptionMessage = "Count users service exception!";
             log.error(exceptionMessage, exception);

@@ -1,15 +1,18 @@
 package by.milavitsky.task_poject.service.impl;
 
 import by.milavitsky.task_poject.dto.ProjectDTO;
+import by.milavitsky.task_poject.exception.IncorrectArgumentException;
 import by.milavitsky.task_poject.exception.RepositoryException;
 import by.milavitsky.task_poject.exception.ServiceException;
 import by.milavitsky.task_poject.mapper.Mapper;
 import by.milavitsky.task_poject.repository.ProjectRepository;
 import by.milavitsky.task_poject.entity.Project;
+import by.milavitsky.task_poject.service.Page;
 import by.milavitsky.task_poject.service.ProjectService;
 import javafx.scene.control.TableColumn;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,9 +74,18 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectDTO> findAll() {
-        List<Project> employeeDao = projectRepository.findAll();
-        return employeeDao.stream().map(mapper::toDTO).collect(Collectors.toList());
+    public List<ProjectDTO> findAll(int page, int size) throws ServiceException, IncorrectArgumentException {
+        try {
+            long count = count();
+            Page userPage = new Page(page, size, count);
+            List<Project> tags = projectRepository.findAll(userPage.getOffset(), userPage.getLimit());
+            return tags.stream().map(mapper::toDTO).collect(Collectors.toList());
+        } catch (DataAccessException exception) {
+            String exceptionMessage = "Find all users service exception!";
+            log.error(exceptionMessage, exception);
+            throw new ServiceException(exceptionMessage, exception);
+        }
+
     }
 
     @Override
@@ -119,6 +131,16 @@ public class ProjectServiceImpl implements ProjectService {
             return projects.stream().map(mapper::toDTO).collect(Collectors.toList());
         } catch (RepositoryException exception) {
             String exceptionMessage = "Sort projects by date of start";
+            log.error(exceptionMessage, exception);
+            throw new ServiceException(exceptionMessage, exception);
+        }
+    }
+    @Override
+    public long count() throws ServiceException {
+        try {
+            return projectRepository.countOfProjects();
+        } catch (DataAccessException exception) {
+            String exceptionMessage = "Count projects service exception!";
             log.error(exceptionMessage, exception);
             throw new ServiceException(exceptionMessage, exception);
         }

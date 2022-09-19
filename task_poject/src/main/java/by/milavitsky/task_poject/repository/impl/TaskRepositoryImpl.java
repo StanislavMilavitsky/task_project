@@ -1,5 +1,6 @@
 package by.milavitsky.task_poject.repository.impl;
 
+import by.milavitsky.task_poject.entity.User;
 import by.milavitsky.task_poject.exception.RepositoryException;
 import by.milavitsky.task_poject.repository.TaskRepository;
 import by.milavitsky.task_poject.entity.Task;
@@ -98,6 +99,11 @@ public class TaskRepositoryImpl implements TaskRepository {
             log.error(exceptionMessage, exception);
             throw new RepositoryException(exceptionMessage, exception);
         }
+    }
+
+    @Override
+    public List<User> findAll(int offset, int limit) {
+        return null;
     }
 
     @Override

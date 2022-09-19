@@ -42,6 +42,6 @@ public interface BaseRepository <T> {
      * @param limit the limit
      * @return list of entity
      */
-    List<User> findAll(int offset, int limit);
+    List<T> findAll(int offset, int limit);
 
 }

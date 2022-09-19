@@ -1,10 +1,13 @@
 package by.milavitsky.task_poject.controller;
 
 import by.milavitsky.task_poject.dto.ProjectDTO;
+import by.milavitsky.task_poject.exception.IncorrectArgumentException;
 import by.milavitsky.task_poject.service.ProjectService;
 import javafx.scene.control.TableColumn;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -23,7 +26,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/projects")
-public class ProjectController {
+public class ProjectController extends CommonController<ProjectDTO> {
 
     private final ProjectService projectService;
 
@@ -106,6 +109,20 @@ public class ProjectController {
 
     }
 
+    @Override
+    @GetMapping
+    public ResponseEntity<PagedModel<ProjectDTO>> findAll(
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "3") int size
+    ) throws ServiceException, IncorrectArgumentException {
+        List<ProjectDTO> tags = projectService.findAll(page, size);
+        long count = projectService.count();
+        PagedModel.PageMetadata pageMetadata = new PagedModel.PageMetadata(size, page, count);
+        List<Link> linkList = buildLink(page, size, (int) pageMetadata.getTotalPages());
+        PagedModel<ProjectDTO> pagedModel = PagedModel.of(tags, pageMetadata, linkList);
+        return ResponseEntity.ok(pagedModel);
+    }
+
     /**
      * Search project by title or description part.
      *
@@ -166,7 +183,6 @@ public class ProjectController {
     private String bindingResultHandler(BindingResult bindingResult) {
         return bindingResult.getAllErrors().get(0).getDefaultMessage();
     }
-
 }
 
 

@@ -13,5 +13,5 @@ public interface UserRepository extends BaseRepository<User> {
      * Get count of all users from db
      * @return
      */
-    long getCountOfUsers();
+    long countOfUsers();
 }

@@ -42,9 +42,5 @@ public interface BaseService<T> {
 
     void deleteById (Long id) throws ServiceException;
 
-    /**
-     * Use method findAll in repository layer
-     * @return list of all entity
-     */
-    List<T> findAll();
+
 }

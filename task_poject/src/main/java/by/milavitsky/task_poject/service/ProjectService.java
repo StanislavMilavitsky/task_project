@@ -1,6 +1,7 @@
 package by.milavitsky.task_poject.service;
 
 import by.milavitsky.task_poject.dto.ProjectDTO;
+import by.milavitsky.task_poject.exception.IncorrectArgumentException;
 import by.milavitsky.task_poject.exception.ServiceException;
 import javafx.scene.control.TableColumn;
 
@@ -11,6 +12,12 @@ import java.util.List;
  */
 
 public interface ProjectService extends BaseService<ProjectDTO> {
+
+    /**
+     * Use method findAll in repository layer
+     * @return list of all entity
+     */
+    List<ProjectDTO> findAll(int page, int size) throws ServiceException, IncorrectArgumentException;
 
     /**
      * Use method repository layer that find project by title or description
@@ -43,4 +50,11 @@ public interface ProjectService extends BaseService<ProjectDTO> {
      * @throws ServiceException if the projects has not been
      */
     List<ProjectDTO> sortByDateEnd(TableColumn.SortType sortType) throws ServiceException;
+
+    /**
+     * Count of all projects
+     * @return count
+     * @throws ServiceException if count dont sum
+     */
+    long count() throws ServiceException;
 }

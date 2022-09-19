@@ -125,7 +125,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public long getCountOfUsers() {
+    public long countOfUsers() {
         return jdbcTemplate.queryForObject(COUNT_OF_ALL_USERS, Long.class);
     }
 }
