@@ -32,7 +32,7 @@ public class ProjectController {
      *
      * @param id the id
      * @return the response entity
-     * @throws ServiceException    the service exception
+     * @throws ServiceException  the service exception
      * @throws ControllerException if id is incorrect
      */
     @GetMapping("/{id}")

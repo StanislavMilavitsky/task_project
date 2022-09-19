@@ -2,6 +2,7 @@ package by.milavitsky.task_poject.repository;
 
 import java.util.List;
 
+import by.milavitsky.task_poject.entity.User;
 import by.milavitsky.task_poject.exception.RepositoryException;
 
 public interface BaseRepository <T> {
@@ -11,7 +12,7 @@ public interface BaseRepository <T> {
      * @return entity
      * @throws RepositoryException if have not been created
      */
-    T create (T entity) throws RepositoryException;
+    T create (T t) throws RepositoryException;
 
     /**
      * Read an entity from database by id
@@ -26,7 +27,7 @@ public interface BaseRepository <T> {
      * @return updated entity if update and null if entity has not been updated
      * @throws RepositoryException if entity have not been update
      */
-    T update (T entity) throws RepositoryException;
+    T update (T t) throws RepositoryException;
 
     /**
      * Delete entity from database by id
@@ -37,7 +38,10 @@ public interface BaseRepository <T> {
 
     /**
      * Find all in database
+     * @param offset the offset
+     * @param limit the limit
      * @return list of entity
      */
-    List<T> findAll();
+    List<User> findAll(int offset, int limit);
+
 }

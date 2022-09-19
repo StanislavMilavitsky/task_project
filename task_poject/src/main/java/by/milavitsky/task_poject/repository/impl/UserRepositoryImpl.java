@@ -60,7 +60,9 @@ public class UserRepositoryImpl implements UserRepository {
             " username," +
             " password," +
             " date_of_registration," +
-            " role, is_deleted FROM users us;";
+            " role, is_deleted FROM users us LIMIT ? OFFSET ?";
+
+    private static final String COUNT_OF_ALL_USERS = "SELECT count() FROM users WHERE is_deleted = false;";
 
     @Override
     public User create(User user) throws RepositoryException {
@@ -117,14 +119,13 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> findAll() {
-        return jdbcTemplate.query(FIND_ALL_USERS_SQL, (rs, rowNum) -> new User(
-                rs.getLong(ID),
-                rs.getString(USERNAME),
-                rs.getString(PASSWORD),
-                rs.getDate(DATE_OF_REGISTRATION).toLocalDate(),
-                rs.getString(ROLE),
-                rs.getBoolean(IS_DELETED)
-        ));
+    public List<User> findAll(int offset, int limit) {
+        return jdbcTemplate.query(FIND_ALL_USERS_SQL,new BeanPropertyRowMapper<>(User.class), limit, offset);
+    }
+
+
+    @Override
+    public long getCountOfUsers() {
+        return jdbcTemplate.queryForObject(COUNT_OF_ALL_USERS, Long.class);
     }
 }

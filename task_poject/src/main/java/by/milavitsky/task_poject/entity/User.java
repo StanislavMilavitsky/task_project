@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.context.annotation.Role;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
