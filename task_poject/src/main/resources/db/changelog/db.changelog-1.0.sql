@@ -3,7 +3,7 @@
 --changeset milavitsky:1
 create table projects
 (
-    id bigint not null
+    id bigserial not null
    constraint project_pk primary key,
     title varchar(20) not null,
     project_description varchar(100),
@@ -16,7 +16,7 @@ create table projects
 --changeset milavitsky:2
 create table tasks
 (
-    id bigint not null
+    id bigserial not null
     constraint task_pk primary key,
     task_description varchar(100),
     is_deleted boolean
@@ -25,7 +25,7 @@ create table tasks
 --changeset milavitsky:3
 create table project_has_task
 (
-    id_task bigint not null
+    id_task bigserial not null
         constraint task_pk
             references tasks,
     id_project bigint not null

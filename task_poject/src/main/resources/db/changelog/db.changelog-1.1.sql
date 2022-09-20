@@ -3,7 +3,7 @@
 --changeset milavitsky:1
 create table users
   (
-  id bigint not null
+  id bigserial not null
   constraint user_pk primary key,
   username varchar (50),
   password varchar (100),

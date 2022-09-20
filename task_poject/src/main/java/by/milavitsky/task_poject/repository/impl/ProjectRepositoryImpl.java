@@ -1,6 +1,6 @@
 package by.milavitsky.task_poject.repository.impl;
 
-import by.milavitsky.task_poject.entity.User;
+
 import by.milavitsky.task_poject.exception.RepositoryException;
 import by.milavitsky.task_poject.repository.ProjectRepository;
 import by.milavitsky.task_poject.entity.Project;

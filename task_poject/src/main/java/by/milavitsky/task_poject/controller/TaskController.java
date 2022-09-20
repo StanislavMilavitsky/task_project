@@ -22,7 +22,7 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1/tasks")
 public class TaskController {
 
-    private TaskService taskService;
+    private final TaskService taskService;
 
     /**
      * Find task by id.

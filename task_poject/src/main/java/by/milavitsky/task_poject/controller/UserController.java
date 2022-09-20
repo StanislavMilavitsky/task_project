@@ -1,6 +1,6 @@
 package by.milavitsky.task_poject.controller;
 
-import by.milavitsky.task_poject.entity.User;
+import by.milavitsky.task_poject.dto.UserDTO;
 import by.milavitsky.task_poject.exception.ControllerException;
 import by.milavitsky.task_poject.exception.IncorrectArgumentException;
 import by.milavitsky.task_poject.exception.ServiceException;
@@ -25,7 +25,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
-public class UserController extends CommonController<User> {
+public class UserController extends CommonController<UserDTO> {
 
     private final UserService userService;
 
@@ -34,36 +34,37 @@ public class UserController extends CommonController<User> {
      *
      * @param id user
      * @return entity user
-     * @throws ServiceException if cant find user
+     * @throws ServiceException    if cant find user
      * @throws ControllerException if negative id
      */
     @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable(name = "id") Long id) throws ControllerException, ServiceException {
-        if(id > 0) {
-            User user = userService.findById(id);
-            return ResponseEntity.ok(user);
+    public ResponseEntity<UserDTO> findById(@PathVariable(name = "id") Long id) throws ControllerException, ServiceException {
+        if (id > 0) {
+            UserDTO userDTO = userService.findById(id);
+            return ResponseEntity.ok(userDTO);
         } else {
             log.error("Negative id exception");
-            throw  new ControllerException("Negative id exception");
+            throw new ControllerException("Negative id exception");
         }
     }
 
     /**
      * Create user
-     * @param user is entity
+     *
+     * @param userDTO is entity user
      * @param bindingResult errors of validation
      * @return created user
      * @throws ControllerException if negative id
-     * @throws ServiceException the service exception
+     * @throws ServiceException    the service exception
      */
 
     @PostMapping()
-    public ResponseEntity<User> create(@Valid User user, BindingResult bindingResult) throws ControllerException, ServiceException {
-        if (bindingResult.hasErrors()){
+    public ResponseEntity<UserDTO> create(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) throws ControllerException, ServiceException {
+        if (bindingResult.hasErrors()) {
             log.error(bindingResultHandler(bindingResult));
             throw new ControllerException(bindingResultHandler(bindingResult));
         } else {
-            User result = userService.create(user);
+            UserDTO result = userService.create(userDTO);
             return ResponseEntity.ok(result);
         }
     }
@@ -71,30 +72,32 @@ public class UserController extends CommonController<User> {
     /**
      * Update user. Mark the fields that are not specified for updating null.
      *
-     * @param user the entity user
+     * @param userDTO the entity user
      * @return the response entity
-     * @throws ServiceException the service exception
+     * @throws ServiceException    the service exception
      * @throws ControllerException if entity fields not valid
      */
-    public ResponseEntity<User> update(@Valid User user, BindingResult bindingResult) throws ServiceException, ControllerException {
-        if (bindingResult.hasErrors()){
+    @PutMapping()
+    public ResponseEntity<UserDTO> update(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) throws ServiceException, ControllerException {
+        if (bindingResult.hasErrors()) {
             log.error(bindingResultHandler(bindingResult));
             throw new ControllerException(bindingResultHandler(bindingResult));
         } else {
-            User result = userService.update(user);
+            UserDTO result = userService.update(userDTO);
             return ResponseEntity.ok(result);
         }
     }
+
     /**
      * Delete user by id.
      *
      * @param id the id
      * @return the response entity
-     * @throws ServiceException the service exception
+     * @throws ServiceException    the service exception
      * @throws ControllerException if id is incorrect
      */
-
-    public ResponseEntity<String> delete(Long id) throws ServiceException, ControllerException {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable(name = "id") Long id) throws ServiceException, ControllerException {
         if (id > 0) {
             userService.deleteById(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -109,20 +112,20 @@ public class UserController extends CommonController<User> {
      * @param page page
      * @param size size of page
      * @return list of users
-     * @throws ServiceException if cant find users
+     * @throws ServiceException           if cant find users
      * @throws IncorrectArgumentException if incorrect argument
      */
     @Override
     @GetMapping
-    public ResponseEntity<PagedModel<User>> findAll(
+    public ResponseEntity<PagedModel<UserDTO>> findAll(
             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
             @RequestParam(value = "size", required = false, defaultValue = "3") int size
     ) throws ServiceException, IncorrectArgumentException {
-        List<User> tags = userService.findAll(page, size);
+        List<UserDTO> tags = userService.findAll(page, size);
         long count = userService.count();
         PagedModel.PageMetadata pageMetadata = new PagedModel.PageMetadata(size, page, count);
         List<Link> linkList = buildLink(page, size, (int) pageMetadata.getTotalPages());
-        PagedModel<User> pagedModel = PagedModel.of(tags, pageMetadata, linkList);
+        PagedModel<UserDTO> pagedModel = PagedModel.of(tags, pageMetadata, linkList);
         return ResponseEntity.ok(pagedModel);
     }
 
@@ -132,7 +135,7 @@ public class UserController extends CommonController<User> {
      * @param bindingResult exceptions of validate
      * @return string default message of exception
      */
-    private String bindingResultHandler(BindingResult bindingResult){
+    private String bindingResultHandler(BindingResult bindingResult) {
         return bindingResult.getAllErrors().get(0).getDefaultMessage();
     }
 

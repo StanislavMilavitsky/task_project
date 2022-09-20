@@ -2,7 +2,6 @@ package by.milavitsky.task_poject.service;
 
 import by.milavitsky.task_poject.exception.ServiceException;
 
-import java.util.List;
 /**
  *  Service layer use methods from repository layer
  */

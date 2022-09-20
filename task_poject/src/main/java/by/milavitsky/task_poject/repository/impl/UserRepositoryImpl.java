@@ -62,7 +62,7 @@ public class UserRepositoryImpl implements UserRepository {
             " date_of_registration," +
             " role, is_deleted FROM users us LIMIT ? OFFSET ?";
 
-    private static final String COUNT_OF_ALL_USERS = "SELECT count() FROM users WHERE is_deleted = false;";
+    private static final String COUNT_OF_ALL_USERS = "SELECT count(*) FROM users WHERE is_deleted = false;";//todo
 
     @Override
     public User create(User user) throws RepositoryException {

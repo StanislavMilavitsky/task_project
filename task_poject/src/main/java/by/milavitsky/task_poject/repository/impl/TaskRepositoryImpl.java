@@ -56,7 +56,7 @@ public class TaskRepositoryImpl implements TaskRepository {
             task.setId(id.longValue());
             return task;
         } catch (DataAccessException exception){
-            String exceptionMessage = String.format("Create task exception sql!");
+            String exceptionMessage = "Create task exception sql!";
             log.error(exceptionMessage, exception);
             throw new RepositoryException(exceptionMessage, exception);
         }
@@ -102,7 +102,7 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
-    public List<User> findAll(int offset, int limit) {
+    public List<Task> findAll(int offset, int limit) {
         return null;
     }
 
