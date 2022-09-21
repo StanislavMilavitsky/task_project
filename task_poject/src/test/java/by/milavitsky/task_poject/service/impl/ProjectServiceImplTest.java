@@ -8,6 +8,7 @@ import by.milavitsky.task_poject.mapper.ProjectReadMapper;
 import by.milavitsky.task_poject.repository.ProjectRepository;
 import by.milavitsky.task_poject.entity.Project;
 import by.milavitsky.task_poject.entity.Task;
+import by.milavitsky.task_poject.repository.TaskRepository;
 import by.milavitsky.task_poject.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,12 +41,13 @@ class ProjectServiceImplTest {
     ProjectDTO projectDTO;
     Mapper mapper;
     List<Task> taskList;
+    TaskRepository taskRepository;
 
     @BeforeEach
     void setUp() {
         mapper = new ProjectReadMapper();
 
-        projectService = new ProjectServiceImpl(projectRepository, mapper);
+        projectService = new ProjectServiceImpl(projectRepository,taskRepository,mapper);
 
         Task task = new Task(1L, "task description", false);
         Task task2 = new Task(2L, "task 2 description", true);

@@ -38,7 +38,7 @@ public class ProjectController extends CommonController<ProjectDTO> {
      * @throws ServiceException  the service exception
      * @throws ControllerException if id is incorrect
      */
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/find-by-id")
     public ResponseEntity<ProjectDTO> findById(@PathVariable(name = "id") Long id) throws ControllerException, ServiceException {
         if (id > 0) {
             ProjectDTO projectDTO = projectService.findById(id);
@@ -98,7 +98,7 @@ public class ProjectController extends CommonController<ProjectDTO> {
      * @throws ServiceException the service exception
      * @throws ControllerException if id is incorrect
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/delete")
     public ResponseEntity<String> delete(@PathVariable(name = "id") Long id) throws ServiceException, ControllerException {
         if (id > 0) {
             projectService.deleteById(id);

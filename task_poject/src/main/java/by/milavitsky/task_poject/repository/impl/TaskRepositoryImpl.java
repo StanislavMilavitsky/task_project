@@ -1,6 +1,6 @@
 package by.milavitsky.task_poject.repository.impl;
 
-import by.milavitsky.task_poject.entity.User;
+import by.milavitsky.task_poject.entity.Project;
 import by.milavitsky.task_poject.exception.RepositoryException;
 import by.milavitsky.task_poject.repository.TaskRepository;
 import by.milavitsky.task_poject.entity.Task;
@@ -45,6 +45,8 @@ public class TaskRepositoryImpl implements TaskRepository {
     public static final String DELETE_TASK_BY_ID_SQL = "UPDATE tasks SET is_deleted = true WHERE  id = ?;";
 
     public static final String FIND_ALL_TASKS_SQL = "SELECT ts.id, task_description, is_deleted FROM tasks ts;";
+
+    public static final String FIND_ALL_TASKS_BY_ID_PROJECT_SQL = "SELECT id, task_description, is_deleted FROM tasks WHERE id_project = ?;";
 
     @Override
     public Task create(Task task) throws RepositoryException {
@@ -113,5 +115,14 @@ public class TaskRepositoryImpl implements TaskRepository {
                 rs.getString(TASK_DESCRIPTION),
                 rs.getBoolean(IS_DELETED)
         ));
+    }
+
+    @Override
+    public List<Task> findAllTaskByProjectId(Long id){
+        return jdbcTemplate.query(FIND_ALL_TASKS_BY_ID_PROJECT_SQL, (rs, rowNum) -> new Task(
+                rs.getLong(ID),
+                rs.getString(TASK_DESCRIPTION),
+                rs.getBoolean(IS_DELETED)
+        ), id);
     }
 }

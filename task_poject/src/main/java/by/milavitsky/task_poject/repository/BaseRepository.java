@@ -2,6 +2,7 @@ package by.milavitsky.task_poject.repository;
 
 import java.util.List;
 
+import by.milavitsky.task_poject.entity.Project;
 import by.milavitsky.task_poject.exception.RepositoryException;
 
 public interface BaseRepository <T> {

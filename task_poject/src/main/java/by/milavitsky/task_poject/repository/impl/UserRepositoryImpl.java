@@ -1,6 +1,7 @@
 package by.milavitsky.task_poject.repository.impl;
 
 
+import by.milavitsky.task_poject.entity.Project;
 import by.milavitsky.task_poject.entity.User;
 import by.milavitsky.task_poject.exception.RepositoryException;
 import by.milavitsky.task_poject.repository.UserRepository;
@@ -19,6 +20,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static by.milavitsky.task_poject.repository.constant.ConstantRepository.*;
 
@@ -64,6 +66,10 @@ public class UserRepositoryImpl implements UserRepository {
 
     private static final String COUNT_OF_ALL_USERS = "SELECT count(*) FROM users WHERE is_deleted = false;";//todo
 
+    private static final String FIND_USER_BY_USERNAME_SQL = "SELECT us.id, username," +
+            " password, date_of_registration, role, is_deleted " +
+            "FROM users us WHERE us.username = ?;";
+
     @Override
     public User create(User user) throws RepositoryException {
         try{
@@ -71,7 +77,7 @@ public class UserRepositoryImpl implements UserRepository {
             parameters.put(USERNAME, user.getUserName());
             parameters.put(PASSWORD, user.getPassword());
             parameters.put(DATE_OF_REGISTRATION, LocalDate.now());
-            parameters.put(ROLE, user.getRole());
+            parameters.put(ROLE, user.getRole().toString());
             parameters.put(IS_DELETED, false);
             Number id = jdbcInsert.executeAndReturnKey(parameters);
             user.setId(id.longValue());
@@ -128,4 +134,10 @@ public class UserRepositoryImpl implements UserRepository {
     public long countOfUsers() {
         return jdbcTemplate.queryForObject(COUNT_OF_ALL_USERS, Long.class);
     }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return Optional.ofNullable(jdbcTemplate.queryForObject(FIND_USER_BY_USERNAME_SQL, new BeanPropertyRowMapper<>(User.class), username));
+    }
+
 }

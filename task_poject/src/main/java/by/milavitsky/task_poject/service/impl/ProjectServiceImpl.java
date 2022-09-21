@@ -1,12 +1,14 @@
 package by.milavitsky.task_poject.service.impl;
 
 import by.milavitsky.task_poject.dto.ProjectDTO;
+import by.milavitsky.task_poject.entity.Task;
 import by.milavitsky.task_poject.exception.IncorrectArgumentException;
 import by.milavitsky.task_poject.exception.RepositoryException;
 import by.milavitsky.task_poject.exception.ServiceException;
 import by.milavitsky.task_poject.mapper.Mapper;
 import by.milavitsky.task_poject.repository.ProjectRepository;
 import by.milavitsky.task_poject.entity.Project;
+import by.milavitsky.task_poject.repository.TaskRepository;
 import by.milavitsky.task_poject.service.Page;
 import by.milavitsky.task_poject.service.ProjectService;
 import javafx.scene.control.TableColumn;
@@ -25,12 +27,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
+    private final TaskRepository taskRepository;
     private final Mapper<ProjectDTO, Project> mapper;
 
     @Override
     public ProjectDTO findById(Long id) throws ServiceException {
         try {
-            return mapper.toDTO(projectRepository.findById(id));
+            List<Task> tasks = taskRepository.findAllTaskByProjectId(id);
+            ProjectDTO projectDTO = mapper.toDTO(projectRepository.findById(id));
+            projectDTO.setTasks(tasks);
+            return projectDTO;
         } catch (RepositoryException exception) {
             String exceptionMessage = String.format("Cant find project by id=%d !", id);
             log.error(exceptionMessage, exception);
@@ -79,6 +85,11 @@ public class ProjectServiceImpl implements ProjectService {
             long count = count();
             Page userPage = new Page(page, size, count);
             List<Project> tags = projectRepository.findAll(userPage.getOffset(), userPage.getLimit());
+            for (int i = 0; i < tags.size() ; i++) {
+               Project project = tags.get(i);
+               List<Task> tasks = taskRepository.findAllTaskByProjectId(project.getId());
+               project.setTasks(tasks);
+            }
             return tags.stream().map(mapper::toDTO).collect(Collectors.toList());
         } catch (DataAccessException exception) {
             String exceptionMessage = "Find all users service exception!";

@@ -1,6 +1,6 @@
 package by.milavitsky.task_poject.controller;
 
-import by.milavitsky.task_poject.dto.UserDTO;
+import by.milavitsky.task_poject.entity.User;
 import by.milavitsky.task_poject.exception.ControllerException;
 import by.milavitsky.task_poject.exception.IncorrectArgumentException;
 import by.milavitsky.task_poject.exception.ServiceException;
@@ -12,6 +12,8 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +27,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
-public class UserController extends CommonController<UserDTO> {
+public class UserController extends CommonController<User> {
 
     private final UserService userService;
 
@@ -37,11 +39,12 @@ public class UserController extends CommonController<UserDTO> {
      * @throws ServiceException    if cant find user
      * @throws ControllerException if negative id
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> findById(@PathVariable(name = "id") Long id) throws ControllerException, ServiceException {
+    @GetMapping("/{id}/find-by-id")
+    @PostAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<User> findById(@PathVariable(name = "id") Long id) throws ControllerException, ServiceException {
         if (id > 0) {
-            UserDTO userDTO = userService.findById(id);
-            return ResponseEntity.ok(userDTO);
+            User user = userService.findById(id);
+            return ResponseEntity.ok(user);
         } else {
             log.error("Negative id exception");
             throw new ControllerException("Negative id exception");
@@ -51,7 +54,7 @@ public class UserController extends CommonController<UserDTO> {
     /**
      * Create user
      *
-     * @param userDTO is entity user
+     * @param user is entity user
      * @param bindingResult errors of validation
      * @return created user
      * @throws ControllerException if negative id
@@ -59,12 +62,12 @@ public class UserController extends CommonController<UserDTO> {
      */
 
     @PostMapping()
-    public ResponseEntity<UserDTO> create(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) throws ControllerException, ServiceException {
+    public ResponseEntity<User> create(@RequestBody @Valid User user, BindingResult bindingResult) throws ControllerException, ServiceException {
         if (bindingResult.hasErrors()) {
             log.error(bindingResultHandler(bindingResult));
             throw new ControllerException(bindingResultHandler(bindingResult));
         } else {
-            UserDTO result = userService.create(userDTO);
+            User result = userService.create(user);
             return ResponseEntity.ok(result);
         }
     }
@@ -72,18 +75,18 @@ public class UserController extends CommonController<UserDTO> {
     /**
      * Update user. Mark the fields that are not specified for updating null.
      *
-     * @param userDTO the entity user
+     * @param user the entity user
      * @return the response entity
      * @throws ServiceException    the service exception
      * @throws ControllerException if entity fields not valid
      */
     @PutMapping()
-    public ResponseEntity<UserDTO> update(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) throws ServiceException, ControllerException {
+    public ResponseEntity<User> update(@RequestBody @Valid User user, BindingResult bindingResult) throws ServiceException, ControllerException {
         if (bindingResult.hasErrors()) {
             log.error(bindingResultHandler(bindingResult));
             throw new ControllerException(bindingResultHandler(bindingResult));
         } else {
-            UserDTO result = userService.update(userDTO);
+            User result = userService.update(user);
             return ResponseEntity.ok(result);
         }
     }
@@ -96,7 +99,8 @@ public class UserController extends CommonController<UserDTO> {
      * @throws ServiceException    the service exception
      * @throws ControllerException if id is incorrect
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/delete")
+    @PostAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> delete(@PathVariable(name = "id") Long id) throws ServiceException, ControllerException {
         if (id > 0) {
             userService.deleteById(id);
@@ -117,15 +121,16 @@ public class UserController extends CommonController<UserDTO> {
      */
     @Override
     @GetMapping
-    public ResponseEntity<PagedModel<UserDTO>> findAll(
+    @PostAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<PagedModel<User>> findAll(
             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
             @RequestParam(value = "size", required = false, defaultValue = "3") int size
     ) throws ServiceException, IncorrectArgumentException {
-        List<UserDTO> tags = userService.findAll(page, size);
+        List<User> tags = userService.findAll(page, size);
         long count = userService.count();
         PagedModel.PageMetadata pageMetadata = new PagedModel.PageMetadata(size, page, count);
         List<Link> linkList = buildLink(page, size, (int) pageMetadata.getTotalPages());
-        PagedModel<UserDTO> pagedModel = PagedModel.of(tags, pageMetadata, linkList);
+        PagedModel<User> pagedModel = PagedModel.of(tags, pageMetadata, linkList);
         return ResponseEntity.ok(pagedModel);
     }
 

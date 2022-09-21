@@ -19,19 +19,11 @@ create table tasks
     id bigserial not null
     constraint task_pk primary key,
     task_description varchar(100),
-    is_deleted boolean
+    is_deleted boolean,
+    id_project bigint
+     constraint id_project
+     references projects
 );
 
---changeset milavitsky:3
-create table project_has_task
-(
-    id_task bigserial not null
-        constraint task_pk
-            references tasks,
-    id_project bigint not null
-        constraint project_pk
-            references projects,
-     constraint project_has_task_pk
-            primary key (id_task, id_project)
-);
+
 

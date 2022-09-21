@@ -40,10 +40,8 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
 
-    public static final String FIND_PROJECT_BY_ID_SQL = "SELECT pr.id, pr.title, pr.project_description, pr.budget," +
-            " pr.date_of_start, pr.is_deleted, pr.date_of_end, t.id, t.task_description, t.is_deleted  FROM projects pr" +
-            " JOIN project_has_task phs ON pr.id=phs.id_task " +
-            "JOIN tasks t on phs.id_task = t.id WHERE pr.id = ?;";
+    public static final String FIND_PROJECT_BY_ID_SQL = "SELECT pr.id, pr.title, pr.project_description, pr.budget, pr.date_of_start, pr.is_deleted, pr.date_of_end" +
+            "  FROM projects pr WHERE pr.id = ?;";
 
     public static final String UPDATE_PROJECT_BY_ID_SQL = "UPDATE projects SET title = ?," +
             "project_description = ?," +
@@ -53,12 +51,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
     public static final String DELETE_PROJECT_BY_ID_SQL = "UPDATE projects SET is_deleted = true WHERE projects = ?;";
 
-    public static final String FIND_ALL_PROJECTS_SQL = "SELECT pr.id, pr.title, pr.project_description, pr.budget," +
-            " pr.date_of_start, pr.date_of_end, pr.is_deleted, t.id, t.task_description, t.is_deleted" +
-            "  FROM projects pr" +
-            " JOIN project_has_task phs ON pr.id=phs.id_task " +
-            "JOIN tasks t on phs.id_task = t.id " +
-            "LIMIT ? OFFSET ?;";
+    public static final String FIND_ALL_PROJECTS_SQL = "SELECT pr.id, pr.title, pr.project_description, pr.budget, pr.date_of_start, pr.date_of_end, pr.is_deleted FROM projects pr LIMIT ? OFFSET ?;";
 
     private static final String SELECT_BY_TITLE_OR_DESCRIPTION_SQL = "SELECT pr.id, pr.title, pr.project_description, pr.budget, pr.date_of_start," +
             " pr.date_of_end, pr.is_deleted FROM projects pr WHERE pr.title LIKE ? OR pr.project_description LIKE ?";
@@ -72,7 +65,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     private static final String SORT_BY_DATE_SQL_END = "SELECT pr.id, title, project_description, budget, date_of_start, date_of_end, is_deleted " +
             "FROM projects pr ORDER BY pr.date_of_end;";
 
-    private static final String COUNT_OF_ALL_PROJECTS = "SELECT count() FROM projects WHERE is_deleted = false;";
+    private static final String COUNT_OF_ALL_PROJECTS = "SELECT count(*) FROM projects WHERE is_deleted = false;";
 
     @Override
     public Project create(Project project) throws RepositoryException {
