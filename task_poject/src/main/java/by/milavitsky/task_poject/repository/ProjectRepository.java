@@ -48,4 +48,18 @@ public interface ProjectRepository extends BaseRepository <Project> {
      * @return count
      */
     long countOfProjects();
+
+    /**
+     * Get count of projects at database not deleted
+     * @return count
+     */
+    long countOfProjectsNotDeleted();
+
+    /**
+     * Find all projects not deleted
+     * @param offset
+     * @param limit
+     * @return list of projects
+     */
+    List<Project> findAllNotDeleted(int offset, int limit);
 }

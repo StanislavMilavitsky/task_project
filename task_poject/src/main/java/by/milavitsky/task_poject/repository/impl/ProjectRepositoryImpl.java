@@ -31,13 +31,13 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     private final JdbcTemplate jdbcTemplate;
 
     private SimpleJdbcInsert jdbcInsert;
-
     @PostConstruct
     private void postConstruct() {
         jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("projects")
                 .usingGeneratedKeyColumns(ID);
     }
+
 
 
     public static final String FIND_PROJECT_BY_ID_SQL = "SELECT pr.id, pr.title, pr.project_description, pr.budget, pr.date_of_start, pr.is_deleted, pr.date_of_end" +
@@ -51,7 +51,9 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
     public static final String DELETE_PROJECT_BY_ID_SQL = "UPDATE projects SET is_deleted = true WHERE projects = ?;";
 
-    public static final String FIND_ALL_PROJECTS_SQL = "SELECT pr.id, pr.title, pr.project_description, pr.budget, pr.date_of_start, pr.date_of_end, pr.is_deleted FROM projects pr LIMIT ? OFFSET ?;";
+    public static final String FIND_ALL_PROJECTS_SQL = "SELECT pr.id, pr.title, pr.project_description, pr.budget, pr.date_of_start, pr.date_of_end, pr.is_deleted" +
+            " FROM projects pr" +
+            " LIMIT ? OFFSET ?;";
 
     private static final String SELECT_BY_TITLE_OR_DESCRIPTION_SQL = "SELECT pr.id, pr.title, pr.project_description, pr.budget, pr.date_of_start," +
             " pr.date_of_end, pr.is_deleted FROM projects pr WHERE pr.title LIKE ? OR pr.project_description LIKE ?";
@@ -65,7 +67,11 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     private static final String SORT_BY_DATE_SQL_END = "SELECT pr.id, title, project_description, budget, date_of_start, date_of_end, is_deleted " +
             "FROM projects pr ORDER BY pr.date_of_end;";
 
-    private static final String COUNT_OF_ALL_PROJECTS = "SELECT count(*) FROM projects WHERE is_deleted = false;";
+    private static final String COUNT_OF_ALL_PROJECTS = "SELECT count(*) FROM projects;";
+
+    private static final String COUNT_OF_ALL_PROJECTS_NOT_DELETED = "SELECT count(*) FROM projects WHERE is_deleted = false;";
+
+    private static final String FIND_ALL_PROJECTS_NOT_DELETED_SQL = "SELECT pr.id, pr.title, pr.project_description, pr.budget, pr.date_of_start, pr.date_of_end, pr.is_deleted FROM projects pr WHERE pr.is_deleted = false LIMIT ? OFFSET ?;";
 
     @Override
     public Project create(Project project) throws RepositoryException {
@@ -192,5 +198,15 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     @Override
     public long countOfProjects() {
         return jdbcTemplate.queryForObject(COUNT_OF_ALL_PROJECTS, Long.class);
+    }
+
+    @Override
+    public long countOfProjectsNotDeleted() {
+        return jdbcTemplate.queryForObject(COUNT_OF_ALL_PROJECTS_NOT_DELETED, Long.class);
+    }
+
+    @Override
+    public List<Project> findAllNotDeleted(int offset, int limit) {
+        return jdbcTemplate.query(FIND_ALL_PROJECTS_NOT_DELETED_SQL,new BeanPropertyRowMapper<>(Project.class), limit, offset);
     }
 }

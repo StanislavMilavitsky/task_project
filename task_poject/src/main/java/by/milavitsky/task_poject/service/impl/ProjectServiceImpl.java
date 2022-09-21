@@ -85,10 +85,9 @@ public class ProjectServiceImpl implements ProjectService {
             long count = count();
             Page userPage = new Page(page, size, count);
             List<Project> tags = projectRepository.findAll(userPage.getOffset(), userPage.getLimit());
-            for (int i = 0; i < tags.size() ; i++) {
-               Project project = tags.get(i);
-               List<Task> tasks = taskRepository.findAllTaskByProjectId(project.getId());
-               project.setTasks(tasks);
+            for (Project project : tags) {
+                List<Task> tasks = taskRepository.findAllTaskByProjectId(project.getId());
+                project.setTasks(tasks);
             }
             return tags.stream().map(mapper::toDTO).collect(Collectors.toList());
         } catch (DataAccessException exception) {
@@ -150,6 +149,35 @@ public class ProjectServiceImpl implements ProjectService {
     public long count() throws ServiceException {
         try {
             return projectRepository.countOfProjects();
+        } catch (DataAccessException exception) {
+            String exceptionMessage = "Count projects service exception!";
+            log.error(exceptionMessage, exception);
+            throw new ServiceException(exceptionMessage, exception);
+        }
+    }
+
+    @Override
+    public List<ProjectDTO> findAllByUser(int page, int size) throws ServiceException, IncorrectArgumentException {
+        try {
+            long count = countNotDeleted();
+            Page userPage = new Page(page, size, count);
+            List<Project> tags = projectRepository.findAllNotDeleted(userPage.getOffset(), userPage.getLimit());
+            for (Project project : tags) {
+                List<Task> tasks = taskRepository.findAllTaskByProjectIdNotDeleted(project.getId());
+                project.setTasks(tasks);
+            }
+            return tags.stream().map(mapper::toDTO).collect(Collectors.toList());
+        } catch (DataAccessException exception) {
+            String exceptionMessage = "Find all users service exception!";
+            log.error(exceptionMessage, exception);
+            throw new ServiceException(exceptionMessage, exception);
+        }
+    }
+
+    @Override
+    public long countNotDeleted() throws ServiceException {
+        try {
+            return projectRepository.countOfProjectsNotDeleted();
         } catch (DataAccessException exception) {
             String exceptionMessage = "Count projects service exception!";
             log.error(exceptionMessage, exception);

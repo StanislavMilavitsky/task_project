@@ -21,4 +21,11 @@ public interface TaskRepository extends BaseRepository <Task> {
      * @return list of tasks
      */
     List<Task> findAllTaskByProjectId(Long id);
+
+    /**
+     * Find all tasks by id project not deleted
+     * @param id project
+     * @return list of tasks
+     */
+    List<Task> findAllTaskByProjectIdNotDeleted(Long id);
 }

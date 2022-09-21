@@ -57,4 +57,17 @@ public interface ProjectService extends BaseService<ProjectDTO> {
      * @throws ServiceException if count dont sum
      */
     long count() throws ServiceException;
+
+    /**
+     * Use method findAll in repository layer and remove all deleted projects
+     * @return list of all entity
+     */
+    List<ProjectDTO> findAllByUser(int page, int size) throws ServiceException, IncorrectArgumentException;
+
+    /**
+     * Count of all projects not deleted
+     * @return count
+     * @throws ServiceException if count dont sum
+     */
+    long countNotDeleted() throws ServiceException;
 }

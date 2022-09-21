@@ -30,13 +30,13 @@ public class TaskRepositoryImpl implements TaskRepository {
     private final JdbcTemplate jdbcTemplate;
 
     private SimpleJdbcInsert jdbcInsert;
-
     @PostConstruct
     private void postConstruct(){
         jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("tasks")
                 .usingGeneratedKeyColumns(ID);
     }
+
 
     public static final String FIND_TASK_BY_ID_SQL = "SELECT ts.id, task_description, is_deleted FROM tasks ts WHERE ts.id = ?;";
 
@@ -47,6 +47,10 @@ public class TaskRepositoryImpl implements TaskRepository {
     public static final String FIND_ALL_TASKS_SQL = "SELECT ts.id, task_description, is_deleted FROM tasks ts;";
 
     public static final String FIND_ALL_TASKS_BY_ID_PROJECT_SQL = "SELECT id, task_description, is_deleted FROM tasks WHERE id_project = ?;";
+
+    private static final String FIND_ALL_TASKS_BY_ID_PROJECT_NOT_DELETED_SQL = "SELECT id, task_description, is_deleted FROM" +
+            " tasks WHERE id_project = ?" +
+            " AND is_deleted = false;"; ;
 
     @Override
     public Task create(Task task) throws RepositoryException {
@@ -120,6 +124,15 @@ public class TaskRepositoryImpl implements TaskRepository {
     @Override
     public List<Task> findAllTaskByProjectId(Long id){
         return jdbcTemplate.query(FIND_ALL_TASKS_BY_ID_PROJECT_SQL, (rs, rowNum) -> new Task(
+                rs.getLong(ID),
+                rs.getString(TASK_DESCRIPTION),
+                rs.getBoolean(IS_DELETED)
+        ), id);
+    }
+
+    @Override
+    public List<Task> findAllTaskByProjectIdNotDeleted(Long id) {
+        return jdbcTemplate.query(FIND_ALL_TASKS_BY_ID_PROJECT_NOT_DELETED_SQL, (rs, rowNum) -> new Task(
                 rs.getLong(ID),
                 rs.getString(TASK_DESCRIPTION),
                 rs.getBoolean(IS_DELETED)

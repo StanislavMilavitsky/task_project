@@ -10,6 +10,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import by.milavitsky.task_poject.exception.ServiceException;
@@ -109,8 +110,17 @@ public class ProjectController extends CommonController<ProjectDTO> {
 
     }
 
+    /**
+     * Find all projects
+     * @param page the page
+     * @param size count on page
+     * @return projects
+     * @throws ServiceException the service excaption
+     * @throws IncorrectArgumentException incorrect argument
+     */
     @Override
-    @GetMapping
+    @GetMapping("/find-all-projects-admin")
+    @PostAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<PagedModel<ProjectDTO>> findAll(
             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
             @RequestParam(value = "size", required = false, defaultValue = "3") int size
@@ -123,6 +133,19 @@ public class ProjectController extends CommonController<ProjectDTO> {
         return ResponseEntity.ok(pagedModel);
     }
 
+
+    @GetMapping("/find-all-projects")
+    public ResponseEntity<PagedModel<ProjectDTO>> findAllByUser(
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "3") int size
+    ) throws ServiceException, IncorrectArgumentException {
+        List<ProjectDTO> tags = projectService.findAllByUser(page, size);
+        long count = projectService.count();
+        PagedModel.PageMetadata pageMetadata = new PagedModel.PageMetadata(size, page, count);
+        List<Link> linkList = buildLink(page, size, (int) pageMetadata.getTotalPages());
+        PagedModel<ProjectDTO> pagedModel = PagedModel.of(tags, pageMetadata, linkList);
+        return ResponseEntity.ok(pagedModel);
+    }
     /**
      * Search project by title or description part.
      *
