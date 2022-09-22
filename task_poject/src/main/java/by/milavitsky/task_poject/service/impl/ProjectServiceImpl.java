@@ -11,7 +11,7 @@ import by.milavitsky.task_poject.entity.Project;
 import by.milavitsky.task_poject.repository.TaskRepository;
 import by.milavitsky.task_poject.service.Page;
 import by.milavitsky.task_poject.service.ProjectService;
-import javafx.scene.control.TableColumn;
+import by.milavitsky.task_poject.entity.SortType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -102,6 +102,10 @@ public class ProjectServiceImpl implements ProjectService {
     public List<ProjectDTO> searchByTitleOrDescription(String part) throws ServiceException {
         try {
             List<Project> projects = projectRepository.searchByTitleOrDescription(part);
+            for (Project project : projects) {
+                List<Task> tasks = taskRepository.findAllTaskByProjectId(project.getId());
+                project.setTasks(tasks);
+            }
             return projects.stream().map(mapper::toDTO).collect(Collectors.toList());
         } catch (RepositoryException exception) {
             String exceptionMessage = String.format("Find project by word=%s exception!", part);
@@ -111,7 +115,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectDTO> sortByTitle(TableColumn.SortType sortType) throws ServiceException {
+    public List<ProjectDTO> sortByTitle(SortType sortType) throws ServiceException {
         try {
             List<Project> projects = projectRepository.sortByTitle(sortType);
             return projects.stream().map(mapper::toDTO).collect(Collectors.toList());
@@ -123,7 +127,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectDTO> sortByDateStart(TableColumn.SortType sortType) throws ServiceException {
+    public List<ProjectDTO> sortByDateStart(SortType sortType) throws ServiceException {
         try {
             List<Project> projects = projectRepository.sortByDateOfStart(sortType);
             return projects.stream().map(mapper::toDTO).collect(Collectors.toList());
@@ -135,7 +139,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectDTO> sortByDateEnd(TableColumn.SortType sortType) throws ServiceException {
+    public List<ProjectDTO> sortByDateEnd(SortType sortType) throws ServiceException {
         try {
             List<Project> projects = projectRepository.sortByDateOfEnd(sortType);
             return projects.stream().map(mapper::toDTO).collect(Collectors.toList());
@@ -145,6 +149,7 @@ public class ProjectServiceImpl implements ProjectService {
             throw new ServiceException(exceptionMessage, exception);
         }
     }
+
     @Override
     public long count() throws ServiceException {
         try {

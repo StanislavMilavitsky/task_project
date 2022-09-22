@@ -1,9 +1,9 @@
 package by.milavitsky.task_poject.controller;
 
 import by.milavitsky.task_poject.dto.ProjectDTO;
+import by.milavitsky.task_poject.entity.SortType;
 import by.milavitsky.task_poject.exception.IncorrectArgumentException;
 import by.milavitsky.task_poject.service.ProjectService;
-import javafx.scene.control.TableColumn;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.Link;
@@ -167,7 +167,7 @@ public class ProjectController extends PageController<ProjectDTO> {
      * @throws ServiceException the service exception
      */
     @GetMapping("/sort-by-title")
-    public ResponseEntity<List<ProjectDTO>> sortByName(@RequestParam(name = "sort") TableColumn.SortType sortType) throws ServiceException {
+    public ResponseEntity<List<ProjectDTO>> sortByName(@RequestParam(name = "sort") SortType sortType) throws ServiceException {
         List<ProjectDTO> projectDTO = projectService.sortByTitle(sortType);
         return ResponseEntity.ok(projectDTO);
     }
@@ -179,7 +179,7 @@ public class ProjectController extends PageController<ProjectDTO> {
      * @throws ServiceException the service exception
      */
     @GetMapping("/sort-by-date-start")
-    public ResponseEntity<List<ProjectDTO>> sortByDateStart(@RequestParam(name = "sort") TableColumn.SortType sortType) throws ServiceException {
+    public ResponseEntity<List<ProjectDTO>> sortByDateStart(@RequestParam(name = "sort") SortType sortType) throws ServiceException {
         List<ProjectDTO> projectDTO = projectService.sortByDateStart(sortType);
         return ResponseEntity.ok(projectDTO);
     }
@@ -191,7 +191,7 @@ public class ProjectController extends PageController<ProjectDTO> {
      * @throws ServiceException the service exception
      */
     @GetMapping("/sort-by-date-end")
-    public ResponseEntity<List<ProjectDTO>> sortByDateEnd(@RequestParam(name = "sort") TableColumn.SortType sortType) throws ServiceException {
+    public ResponseEntity<List<ProjectDTO>> sortByDateEnd(@RequestParam(name = "sort") SortType sortType) throws ServiceException {
         List<ProjectDTO> projectDTO = projectService.sortByDateEnd(sortType);
         return ResponseEntity.ok(projectDTO);
     }

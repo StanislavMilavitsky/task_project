@@ -4,7 +4,6 @@ package by.milavitsky.task_poject.repository.impl;
 import by.milavitsky.task_poject.exception.RepositoryException;
 import by.milavitsky.task_poject.repository.ProjectRepository;
 import by.milavitsky.task_poject.entity.Project;
-import javafx.scene.control.TableColumn;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -21,6 +20,8 @@ import java.util.Map;
 
 import static by.milavitsky.task_poject.repository.constant.ConstantRepository.*;
 
+import by.milavitsky.task_poject.entity.SortType;
+
 @Slf4j
 @Repository
 @RequiredArgsConstructor
@@ -31,6 +32,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     private final JdbcTemplate jdbcTemplate;
 
     private SimpleJdbcInsert jdbcInsert;
+
     @PostConstruct
     private void postConstruct() {
         jdbcInsert = new SimpleJdbcInsert(dataSource)
@@ -44,10 +46,11 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     public static final String UPDATE_PROJECT_BY_ID_SQL = "UPDATE projects SET title = ?," +
             "project_description = ?," +
             "budget = ?," +
+            "date_of_start = ?," +
             "date_of_end = ? " +
-            "WHERE projects = ?;";
+            "WHERE id = ?;";
 
-    public static final String DELETE_PROJECT_BY_ID_SQL = "UPDATE projects SET is_deleted = true WHERE projects = ?;";
+    public static final String DELETE_PROJECT_BY_ID_SQL = "UPDATE projects SET is_deleted = true WHERE projects.id = ?;";
 
     public static final String FIND_ALL_PROJECTS_SQL = "SELECT pr.id, pr.title, pr.project_description, pr.budget, pr.date_of_start, pr.date_of_end, pr.is_deleted" +
             " FROM projects pr" +
@@ -56,14 +59,14 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     private static final String SELECT_BY_TITLE_OR_DESCRIPTION_SQL = "SELECT pr.id, pr.title, pr.project_description, pr.budget, pr.date_of_start," +
             " pr.date_of_end, pr.is_deleted FROM projects pr WHERE pr.title LIKE ? OR pr.project_description LIKE ?";
 
-    private static final String SORT_BY_TITLE_SQL = "SELECT pr.id, title, project_description, budget, date_of_start, date_of_end, is_deleted" +
-            " FROM projects pr ORDER BY pr.title;";
+    private static final String SORT_BY_TITLE_SQL = "SELECT id, title, project_description, budget, date_of_start, date_of_end, is_deleted" +
+            " FROM projects  ORDER BY title ";
 
     private static final String SORT_BY_DATE_SQL_START = "SELECT pr.id, title, project_description, budget, date_of_start, date_of_end, is_deleted " +
-            "FROM projects pr ORDER BY pr.date_of_start;";
+            "FROM projects pr ORDER BY pr.date_of_start ";
 
     private static final String SORT_BY_DATE_SQL_END = "SELECT pr.id, title, project_description, budget, date_of_start, date_of_end, is_deleted " +
-            "FROM projects pr ORDER BY pr.date_of_end;";
+            "FROM projects pr ORDER BY pr.date_of_end ";
 
     private static final String COUNT_OF_ALL_PROJECTS = "SELECT count(*) FROM projects;";
 
@@ -74,13 +77,14 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     @Override
     public Project create(Project project) throws RepositoryException {
         try {
+            project.setIsDeleted(false);
             Map<String, Object> parameters = new HashMap<>();
             parameters.put(TITLE, project.getTitle());
             parameters.put(PROJECT_DESCRIPTION, project.getProjectDescription());
             parameters.put(BUDGET, project.getBudget());
             parameters.put(DATE_OF_START, project.getDateOfStart());
             parameters.put(DATE_OF_END, project.getDateOfEnd());
-            parameters.put(IS_DELETED, false);
+            parameters.put(IS_DELETED, project.getIsDeleted());
 
             Number id = jdbcInsert.executeAndReturnKey(parameters);
             project.setId(id.longValue());
@@ -106,7 +110,9 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     @Override
     public Project update(Project project) throws RepositoryException {
         try {
-            int rows = jdbcTemplate.update(UPDATE_PROJECT_BY_ID_SQL, project.getProjectDescription(), project.getBudget(), project.getDateOfEnd());
+            int rows = jdbcTemplate.update(UPDATE_PROJECT_BY_ID_SQL, project.getTitle(),
+                    project.getProjectDescription(), project.getBudget(),
+                    project.getDateOfStart(), project.getDateOfEnd(), project.getId());
             return rows > 0L ? findById(project.getId()) : null;
         } catch (DataAccessException exception) {
             String exceptionMessage = String.format("Update project by id=%d exception sql!", project.getId());
@@ -133,7 +139,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
     @Override
     public List<Project> findAll(int offset, int limit) {
-        return jdbcTemplate.query(FIND_ALL_PROJECTS_SQL,new BeanPropertyRowMapper<>(Project.class), limit, offset);
+        return jdbcTemplate.query(FIND_ALL_PROJECTS_SQL, new BeanPropertyRowMapper<>(Project.class), limit, offset);
     }
 
     @Override
@@ -149,11 +155,11 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public List<Project> sortByTitle(TableColumn.SortType sortType) throws RepositoryException {
+    public List<Project> sortByTitle(SortType sortType) throws RepositoryException {
         try {
             StringBuilder builder = new StringBuilder(SORT_BY_TITLE_SQL);
-            if (sortType == TableColumn.SortType.DESCENDING) {
-                builder.append(TableColumn.SortType.DESCENDING.name());
+            if (sortType == SortType.DESC) {
+                builder.append(SortType.DESC.name());
             }
             return jdbcTemplate.query(builder.toString(), new BeanPropertyRowMapper<>(Project.class));
         } catch (DataAccessException exception) {
@@ -164,11 +170,11 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public List<Project> sortByDateOfStart(TableColumn.SortType sortType) throws RepositoryException {
+    public List<Project> sortByDateOfStart(SortType sortType) throws RepositoryException {
         try {
             StringBuilder builder = new StringBuilder(SORT_BY_DATE_SQL_START);
-            if (sortType == TableColumn.SortType.DESCENDING) {
-                builder.append(TableColumn.SortType.DESCENDING.name());
+            if (sortType == SortType.DESC) {
+                builder.append(SortType.DESC.name());
             }
             return jdbcTemplate.query(builder.toString(), new BeanPropertyRowMapper<>(Project.class));
         } catch (DataAccessException exception) {
@@ -179,11 +185,11 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public List<Project> sortByDateOfEnd(TableColumn.SortType sortType) throws RepositoryException {
+    public List<Project> sortByDateOfEnd(SortType sortType) throws RepositoryException {
         try {
             StringBuilder builder = new StringBuilder(SORT_BY_DATE_SQL_END);
-            if (sortType == TableColumn.SortType.DESCENDING) {
-                builder.append(TableColumn.SortType.DESCENDING.name());
+            if (sortType == SortType.DESC) {
+                builder.append(SortType.DESC.name());
             }
             return jdbcTemplate.query(builder.toString(), new BeanPropertyRowMapper<>(Project.class));
         } catch (DataAccessException exception) {
@@ -205,6 +211,6 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
     @Override
     public List<Project> findAllNotDeleted(int offset, int limit) {
-        return jdbcTemplate.query(FIND_ALL_PROJECTS_NOT_DELETED_SQL,new BeanPropertyRowMapper<>(Project.class), limit, offset);
+        return jdbcTemplate.query(FIND_ALL_PROJECTS_NOT_DELETED_SQL, new BeanPropertyRowMapper<>(Project.class), limit, offset);
     }
 }

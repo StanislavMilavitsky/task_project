@@ -1,8 +1,8 @@
 package by.milavitsky.task_poject.repository;
 
+import by.milavitsky.task_poject.entity.SortType;
 import by.milavitsky.task_poject.exception.RepositoryException;
 import by.milavitsky.task_poject.entity.Project;
-import javafx.scene.control.TableColumn;
 
 import java.util.List;
 
@@ -21,27 +21,27 @@ public interface ProjectRepository extends BaseRepository <Project> {
 
     /**
      * Select entity from database and sort them by title
-     * @param sortType is type from enum class TableColumn.SortType
+     * @param sortType is type from enum class SortType
      * @return list of sorted entity
      * @throws RepositoryException if projects have not been sorted
      */
-    List<Project> sortByTitle(TableColumn.SortType sortType) throws RepositoryException;
+    List<Project> sortByTitle(SortType sortType) throws RepositoryException;
 
     /**
      * Select entity from database and sort them by date of start
-     * @param sortType is type from enum class TableColumn.SortType
+     * @param sortType is type from enum class SortType
      * @return list of sorted entity
      * @throws RepositoryException if projects have not been sorted
      */
-    List<Project> sortByDateOfStart(TableColumn.SortType sortType) throws RepositoryException;
+    List<Project> sortByDateOfStart(SortType sortType) throws RepositoryException;
 
     /**
      * Select entity from database and sort them by date of end
-     * @param sortType is type from enum class TableColumn.SortType
+     * @param sortType is type from enum class SortType
      * @return list of sorted entity
      * @throws RepositoryException if projects have not been sorted
      */
-    List<Project> sortByDateOfEnd(TableColumn.SortType sortType) throws RepositoryException;
+    List<Project> sortByDateOfEnd(SortType sortType) throws RepositoryException;
 
     /**
      * Get count of projects at database not deleted
