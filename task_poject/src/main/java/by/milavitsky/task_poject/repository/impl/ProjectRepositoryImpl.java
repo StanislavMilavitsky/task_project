@@ -38,8 +38,6 @@ public class ProjectRepositoryImpl implements ProjectRepository {
                 .usingGeneratedKeyColumns(ID);
     }
 
-
-
     public static final String FIND_PROJECT_BY_ID_SQL = "SELECT pr.id, pr.title, pr.project_description, pr.budget, pr.date_of_start, pr.is_deleted, pr.date_of_end" +
             "  FROM projects pr WHERE pr.id = ?;";
 
@@ -196,7 +194,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public long countOfProjects() {
+    public long countOfEntity() {
         return jdbcTemplate.queryForObject(COUNT_OF_ALL_PROJECTS, Long.class);
     }
 

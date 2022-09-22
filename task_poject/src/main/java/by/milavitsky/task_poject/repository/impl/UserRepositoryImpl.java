@@ -1,7 +1,5 @@
 package by.milavitsky.task_poject.repository.impl;
 
-
-import by.milavitsky.task_poject.entity.Project;
 import by.milavitsky.task_poject.entity.User;
 import by.milavitsky.task_poject.exception.RepositoryException;
 import by.milavitsky.task_poject.repository.UserRepository;
@@ -73,12 +71,14 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User create(User user) throws RepositoryException {
         try{
+            user.setDateOfRegistration(LocalDate.now());
+            user.setIsDeleted(false);
             Map<String, Object> parameters = new HashMap<>();
             parameters.put(USERNAME, user.getUserName());
             parameters.put(PASSWORD, user.getPassword());
-            parameters.put(DATE_OF_REGISTRATION, LocalDate.now());
+            parameters.put(DATE_OF_REGISTRATION, user.getDateOfRegistration() );
             parameters.put(ROLE, user.getRole().toString());
-            parameters.put(IS_DELETED, false);
+            parameters.put(IS_DELETED, user.getIsDeleted());
             Number id = jdbcInsert.executeAndReturnKey(parameters);
             user.setId(id.longValue());
             return user;
@@ -131,7 +131,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public long countOfUsers() {
+    public long countOfEntity() {
         return jdbcTemplate.queryForObject(COUNT_OF_ALL_USERS, Long.class);
     }
 

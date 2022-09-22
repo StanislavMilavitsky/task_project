@@ -2,7 +2,6 @@ package by.milavitsky.task_poject.repository;
 
 import java.util.List;
 
-import by.milavitsky.task_poject.entity.Project;
 import by.milavitsky.task_poject.exception.RepositoryException;
 
 public interface BaseRepository <T> {
@@ -43,5 +42,11 @@ public interface BaseRepository <T> {
      * @return list of entity
      */
     List<T> findAll(int offset, int limit);
+
+    /**
+     * Get count of all users from db
+     * @return count of users
+     */
+    long countOfEntity();
 
 }

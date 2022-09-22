@@ -1,12 +1,14 @@
 package by.milavitsky.task_poject.config;
 
-import by.milavitsky.task_poject.entity.Role;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 
 import java.util.Arrays;
@@ -20,20 +22,18 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
-    /*@Bean
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-         http
+        http
                 .csrf().disable()
-                .authorizeHttpRequests(urlConfig -> urlConfig
-                       // .antMatchers( "/users/registration", "v3/api-docs/**", "swagger-ui/**").authenticated()
-                       // .antMatchers("/users/{\\d+}/delete", "/users/{\\d+}/find-by-id").hasAuthority(Role.ADMIN.getAuthority())
-                        .anyRequest().permitAll())
-                        .httpBasic(withDefaults());
+                .authorizeRequests().anyRequest().authenticated()
+                .and()
+                .httpBasic(Customizer.withDefaults());
         return http.build();
-    }*/
+    }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 

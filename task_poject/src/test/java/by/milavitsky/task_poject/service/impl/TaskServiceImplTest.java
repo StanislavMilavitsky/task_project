@@ -32,7 +32,7 @@ class TaskServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        task = new Task(1L, "description",  false);
+        task = new Task(1L, "description",  false, 1L);
 
         taskService = new TaskServiceImpl(taskRepository);
 

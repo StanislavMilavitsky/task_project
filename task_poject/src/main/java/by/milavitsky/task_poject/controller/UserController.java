@@ -13,7 +13,6 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +26,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
-public class UserController extends CommonController<User> {
+public class UserController extends PageController<User> {
 
     private final UserService userService;
 
@@ -132,16 +131,6 @@ public class UserController extends CommonController<User> {
         List<Link> linkList = buildLink(page, size, (int) pageMetadata.getTotalPages());
         PagedModel<User> pagedModel = PagedModel.of(tags, pageMetadata, linkList);
         return ResponseEntity.ok(pagedModel);
-    }
-
-    /**
-     * Get default message by validate exception
-     *
-     * @param bindingResult exceptions of validate
-     * @return string default message of exception
-     */
-    private String bindingResultHandler(BindingResult bindingResult) {
-        return bindingResult.getAllErrors().get(0).getDefaultMessage();
     }
 
 }

@@ -148,13 +148,14 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public long count() throws ServiceException {
         try {
-            return projectRepository.countOfProjects();
+            return projectRepository.countOfEntity();
         } catch (DataAccessException exception) {
             String exceptionMessage = "Count projects service exception!";
             log.error(exceptionMessage, exception);
             throw new ServiceException(exceptionMessage, exception);
         }
     }
+
 
     @Override
     public List<ProjectDTO> findAllByUser(int page, int size) throws ServiceException, IncorrectArgumentException {

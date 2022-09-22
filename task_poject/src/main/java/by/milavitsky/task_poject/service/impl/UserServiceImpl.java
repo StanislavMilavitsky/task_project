@@ -31,7 +31,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
 
-    @PostFilter("filterObject.role.name().equals('ADMIN')")
     @Override
     public User findById(Long id) throws ServiceException {
         try {
@@ -65,7 +64,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
-    @PostFilter("filterObject.role.name().equals('ADMIN')")
     @Override
     public void deleteById(Long id) throws ServiceException {
         try{
@@ -78,12 +76,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    @PostFilter("filterObject.role.name().equals('ADMIN')")
+   // @PostFilter("filterObject.role.name().equals('ADMIN')")
     public List<User> findAll(int page, int size) throws ServiceException, IncorrectArgumentException {
         try {
             long count = count();
             Page userPage = new Page(page, size, count);
-            return new ArrayList<>(userRepository.findAll(userPage.getOffset(), userPage.getLimit()));
+            List<User> users = new ArrayList<>(userRepository.findAll(userPage.getOffset(), userPage.getLimit()));
+            return users;
         } catch (DataAccessException exception) {
             String exceptionMessage = "Find all users service exception!";
             log.error(exceptionMessage, exception);
@@ -94,7 +93,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public long count() throws ServiceException {
         try {
-            return userRepository.countOfUsers();
+            return userRepository.countOfEntity();
         } catch (DataAccessException exception) {
             String exceptionMessage = "Count users service exception!";
             log.error(exceptionMessage, exception);

@@ -27,7 +27,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/projects")
-public class ProjectController extends CommonController<ProjectDTO> {
+public class ProjectController extends PageController<ProjectDTO> {
 
     private final ProjectService projectService;
 
@@ -196,16 +196,6 @@ public class ProjectController extends CommonController<ProjectDTO> {
         return ResponseEntity.ok(projectDTO);
     }
 
-
-    /**
-     * Get default message by validate exception
-     *
-     * @param bindingResult exceptions of validate
-     * @return string default message of exception
-     */
-    private String bindingResultHandler(BindingResult bindingResult) {
-        return bindingResult.getAllErrors().get(0).getDefaultMessage();
-    }
 }
 
 

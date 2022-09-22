@@ -23,6 +23,8 @@ public class ConstantRepository {
      *  Constants for task entity
      */
     public static final String TASK_DESCRIPTION = "task_description";
+    public static final String ID_PROJECT = "id_project";
+
 
     /**
      *  Constants for user entity

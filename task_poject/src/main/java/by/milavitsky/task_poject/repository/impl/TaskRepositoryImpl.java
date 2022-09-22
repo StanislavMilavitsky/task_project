@@ -1,6 +1,5 @@
 package by.milavitsky.task_poject.repository.impl;
 
-import by.milavitsky.task_poject.entity.Project;
 import by.milavitsky.task_poject.exception.RepositoryException;
 import by.milavitsky.task_poject.repository.TaskRepository;
 import by.milavitsky.task_poject.entity.Task;
@@ -38,26 +37,31 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
 
-    public static final String FIND_TASK_BY_ID_SQL = "SELECT ts.id, task_description, is_deleted FROM tasks ts WHERE ts.id = ?;";
+    public static final String FIND_TASK_BY_ID_SQL = "SELECT ts.id, task_description, is_deleted, id_project  FROM tasks ts WHERE ts.id = ?;";
 
     public static final String UPDATE_TASK_BY_ID_SQL = "UPDATE tasks SET task_description = ? WHERE id =?;";
 
     public static final String DELETE_TASK_BY_ID_SQL = "UPDATE tasks SET is_deleted = true WHERE  id = ?;";
 
-    public static final String FIND_ALL_TASKS_SQL = "SELECT ts.id, task_description, is_deleted FROM tasks ts;";
+    public static final String FIND_ALL_TASKS_SQL = "SELECT ts.id, task_description, is_deleted, id_project FROM tasks ts;";
 
-    public static final String FIND_ALL_TASKS_BY_ID_PROJECT_SQL = "SELECT id, task_description, is_deleted FROM tasks WHERE id_project = ?;";
+    public static final String FIND_ALL_TASKS_BY_ID_PROJECT_SQL = "SELECT id, task_description, is_deleted, id_project  FROM tasks WHERE id_project = ?;";
 
-    private static final String FIND_ALL_TASKS_BY_ID_PROJECT_NOT_DELETED_SQL = "SELECT id, task_description, is_deleted FROM" +
+    private static final String FIND_ALL_TASKS_BY_ID_PROJECT_NOT_DELETED_SQL = "SELECT id, task_description, is_deleted, id_project  FROM" +
             " tasks WHERE id_project = ?" +
-            " AND is_deleted = false;"; ;
+            " AND is_deleted = false;";
+
+    private static final String COUNT_OF_ALL_TASKS = "SELECT COUNT(*) FROM TASKS";
+
 
     @Override
     public Task create(Task task) throws RepositoryException {
         try{
+            task.setIsDeleted(false);
             Map<String, Object> parameters = new HashMap<>();
             parameters.put(TASK_DESCRIPTION, task.getTaskDescription());
-            parameters.put(IS_DELETED, false);
+            parameters.put(IS_DELETED, task.getIsDeleted());
+            parameters.put(ID_PROJECT, task.getIdProject());
             Number id = jdbcInsert.executeAndReturnKey(parameters);
             task.setId(id.longValue());
             return task;
@@ -113,11 +117,17 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
+    public long countOfEntity() {
+        return jdbcTemplate.queryForObject(COUNT_OF_ALL_TASKS, Long.class);
+    }
+
+    @Override
     public List<Task> findAll() {
         return jdbcTemplate.query(FIND_ALL_TASKS_SQL, (rs, rowNum) -> new Task(
                 rs.getLong(ID),
                 rs.getString(TASK_DESCRIPTION),
-                rs.getBoolean(IS_DELETED)
+                rs.getBoolean(IS_DELETED),
+                rs.getLong(ID_PROJECT)
         ));
     }
 
@@ -126,7 +136,8 @@ public class TaskRepositoryImpl implements TaskRepository {
         return jdbcTemplate.query(FIND_ALL_TASKS_BY_ID_PROJECT_SQL, (rs, rowNum) -> new Task(
                 rs.getLong(ID),
                 rs.getString(TASK_DESCRIPTION),
-                rs.getBoolean(IS_DELETED)
+                rs.getBoolean(IS_DELETED),
+                rs.getLong(ID_PROJECT)
         ), id);
     }
 
@@ -135,7 +146,8 @@ public class TaskRepositoryImpl implements TaskRepository {
         return jdbcTemplate.query(FIND_ALL_TASKS_BY_ID_PROJECT_NOT_DELETED_SQL, (rs, rowNum) -> new Task(
                 rs.getLong(ID),
                 rs.getString(TASK_DESCRIPTION),
-                rs.getBoolean(IS_DELETED)
+                rs.getBoolean(IS_DELETED),
+                rs.getLong(ID_PROJECT)
         ), id);
     }
 }

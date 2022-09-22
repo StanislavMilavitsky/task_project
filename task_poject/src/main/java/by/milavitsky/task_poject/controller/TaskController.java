@@ -83,6 +83,27 @@ public class TaskController {
     }
 
     /**
+     * Create task
+     *
+     * @param task is entity task
+     * @param bindingResult errors of validation
+     * @return created task
+     * @throws ControllerException if negative id
+     * @throws ServiceException    the service exception
+     */
+
+    @PostMapping()
+    public ResponseEntity<Task> create(@RequestBody @Valid Task task, BindingResult bindingResult) throws ControllerException, ServiceException {
+        if (bindingResult.hasErrors()) {
+            log.error(bindingResultHandler(bindingResult));
+            throw new ControllerException(bindingResultHandler(bindingResult));
+        } else {
+            Task result = taskService.create(task);
+            return ResponseEntity.ok(result);
+        }
+    }
+
+    /**
      * Get default message by validate exception
      *
      * @param bindingResult exceptions of validate

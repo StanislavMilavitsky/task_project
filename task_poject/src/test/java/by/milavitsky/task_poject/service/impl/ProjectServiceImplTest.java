@@ -49,8 +49,8 @@ class ProjectServiceImplTest {
 
         projectService = new ProjectServiceImpl(projectRepository,taskRepository,mapper);
 
-        Task task = new Task(1L, "task description", false);
-        Task task2 = new Task(2L, "task 2 description", true);
+        Task task = new Task(1L, "task description",  false, 1L);
+        Task task2 = new Task(2L, "task 2 description", true, 1L);
         taskList = new ArrayList<>();
         taskList.add(task);
         taskList.add(task2);

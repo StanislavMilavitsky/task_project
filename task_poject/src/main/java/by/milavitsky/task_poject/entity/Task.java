@@ -22,4 +22,6 @@ public class Task implements Serializable {
     private String taskDescription;
 
     private Boolean isDeleted;
+
+    private Long idProject;
 }

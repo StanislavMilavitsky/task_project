@@ -6,6 +6,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
  *
  * @param <T> entity that must be on page
  */
-public abstract class CommonController<T> {
+public abstract class PageController<T> {
     public abstract ResponseEntity<PagedModel<T>> findAll(int page, int size)
             throws ServiceException, IncorrectArgumentException;
 
@@ -46,4 +47,14 @@ public abstract class CommonController<T> {
         }
         return linkList;
     }
+    /**
+     * Get default message by validate exception
+     *
+     * @param bindingResult exceptions of validate
+     * @return string default message of exception
+     */
+    protected String bindingResultHandler(BindingResult bindingResult) {
+        return bindingResult.getAllErrors().get(0).getDefaultMessage();
+    }
+
 }
