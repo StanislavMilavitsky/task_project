@@ -59,7 +59,7 @@ public class ProjectController extends PageController<ProjectDTO> {
      * @throws ControllerException if entity fields not valid
      */
 
-    @PostMapping()
+    @PostMapping("/create")
     public ResponseEntity<ProjectDTO> create(@RequestBody @Valid ProjectDTO projectDTO, BindingResult bindingResult)
             throws ServiceException, ControllerException {
         if (bindingResult.hasErrors()) {
@@ -79,7 +79,7 @@ public class ProjectController extends PageController<ProjectDTO> {
      * @throws ServiceException the service exception
      * @throws ControllerException if entity fields not valid
      */
-    @PutMapping()
+    @PutMapping("/update")
     public ResponseEntity<ProjectDTO> update(@RequestBody @Valid ProjectDTO projectDTO,
                                              BindingResult bindingResult) throws ServiceException, ControllerException {
         if (bindingResult.hasErrors()) {

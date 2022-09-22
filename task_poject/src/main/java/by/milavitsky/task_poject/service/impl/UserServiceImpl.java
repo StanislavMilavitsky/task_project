@@ -1,5 +1,6 @@
 package by.milavitsky.task_poject.service.impl;
 
+import by.milavitsky.task_poject.entity.Role;
 import by.milavitsky.task_poject.entity.User;
 import by.milavitsky.task_poject.exception.IncorrectArgumentException;
 import by.milavitsky.task_poject.exception.RepositoryException;
@@ -11,15 +12,19 @@ import by.milavitsky.task_poject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.config.authentication.PasswordEncoderParser;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 @Slf4j
@@ -29,6 +34,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User findById(Long id) throws ServiceException {
@@ -43,8 +49,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User create(User user) throws ServiceException {
-        try{
-                return userRepository.create(user);
+        try {
+            if (user.getRole() == null ){
+                user.setRole(Role.USER);
+            }
+
+            Optional.ofNullable(user.getPassword())
+                    .filter(StringUtils::hasText)
+                    .map(passwordEncoder::encode)
+                    .ifPresent(user::setPassword);
+
+            return userRepository.create(user);
         } catch (RepositoryException exception) {
             String exceptionMessage = String.format("Add user by username=%s exception!", user.getUserName());
             log.error(exceptionMessage, exception);
@@ -54,7 +69,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User update(User user) throws ServiceException {
-        try{
+        try {
             return userRepository.update(user);
         } catch (RepositoryException exception) {
             String exceptionMessage = String.format("Update user by  username=%s exception!", user.getUserName());
@@ -65,7 +80,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void deleteById(Long id) throws ServiceException {
-        try{
+        try {
             userRepository.delete(id);
         } catch (RepositoryException exception) {
             String exceptionMessage = String.format("Delete user by id=%d exception!", id);
@@ -75,7 +90,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-   // @PostFilter("filterObject.role.name().equals('ADMIN')")
+    // @PostFilter("filterObject.role.name().equals('ADMIN')")
     public List<User> findAll(int page, int size) throws ServiceException, IncorrectArgumentException {
         try {
             long count = count();

@@ -5,6 +5,7 @@ import by.milavitsky.task_poject.exception.ControllerException;
 import by.milavitsky.task_poject.exception.IncorrectArgumentException;
 import by.milavitsky.task_poject.exception.ServiceException;
 import by.milavitsky.task_poject.service.UserService;
+import by.milavitsky.task_poject.validation.group.CreateAction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -60,7 +62,7 @@ public class UserController extends PageController<User> {
      * @throws ServiceException    the service exception
      */
 
-    @PostMapping()
+    @PostMapping("/create")
     public ResponseEntity<User> create(@RequestBody @Valid User user, BindingResult bindingResult) throws ControllerException, ServiceException {
         if (bindingResult.hasErrors()) {
             log.error(bindingResultHandler(bindingResult));
@@ -79,8 +81,8 @@ public class UserController extends PageController<User> {
      * @throws ServiceException    the service exception
      * @throws ControllerException if entity fields not valid
      */
-    @PutMapping()
-    public ResponseEntity<User> update(@RequestBody @Valid User user, BindingResult bindingResult) throws ServiceException, ControllerException {
+    @PutMapping("/update")
+    public ResponseEntity<User> update(@RequestBody @Valid @Validated({CreateAction.class}) User user, BindingResult bindingResult) throws ServiceException, ControllerException {
         if (bindingResult.hasErrors()) {
             log.error(bindingResultHandler(bindingResult));
             throw new ControllerException(bindingResultHandler(bindingResult));

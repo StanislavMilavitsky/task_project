@@ -32,7 +32,7 @@ public class TaskController {
      * @throws ServiceException the service exception
      * @throws ControllerException if id is incorrect
      */
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/find-by-id")
     public ResponseEntity<Task> findById(@PathVariable(name = "id") Long id) throws ControllerException, ServiceException {
         if (id > 0){
             Task task = taskService.findById(id);
@@ -51,7 +51,7 @@ public class TaskController {
      * @throws ServiceException the service exception
      * @throws ControllerException if entity fields not valid
      */
-    @PutMapping()
+    @PutMapping("/update")
     public ResponseEntity<Task> update(@RequestBody @Valid Task task,
                                               BindingResult bindingResult) throws ServiceException, ControllerException{
         if (bindingResult.hasErrors()){
@@ -71,7 +71,7 @@ public class TaskController {
      * @throws ServiceException the service exception
      * @throws ControllerException if id is incorrect
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/delete")
     public ResponseEntity<String> delete(@PathVariable(name = "id") Long id) throws ServiceException, ControllerException {
         if (id > 0) {
             taskService.deleteById(id);
@@ -92,7 +92,7 @@ public class TaskController {
      * @throws ServiceException    the service exception
      */
 
-    @PostMapping()
+    @PostMapping("/create")
     public ResponseEntity<Task> create(@RequestBody @Valid Task task, BindingResult bindingResult) throws ControllerException, ServiceException {
         if (bindingResult.hasErrors()) {
             log.error(bindingResultHandler(bindingResult));

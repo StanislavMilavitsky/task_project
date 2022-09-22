@@ -1,5 +1,6 @@
 package by.milavitsky.task_poject.entity;
 
+import by.milavitsky.task_poject.validation.group.CreateAction;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +25,7 @@ public class User implements Serializable {
     @Size(min = 2, max = 30, message = "Username should be between 2 and 50 characters")
     private String userName;
 
-    @NotBlank()
+    @NotBlank(groups = CreateAction.class)
     private String password;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
