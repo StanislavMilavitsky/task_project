@@ -22,7 +22,7 @@ import static org.mockito.Mockito.lenient;
 class TaskServiceImplTest {
 
     /**
-     * Initialisation test
+     * Initialisation variables tests
      */
 
     @Mock
