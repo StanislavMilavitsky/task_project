@@ -18,6 +18,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,7 +49,17 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectDTO create(ProjectDTO projectDTO) throws ServiceException {
         try {
             Project project = mapper.fromDTO(projectDTO);
-            return mapper.toDTO(projectRepository.create(project));
+            project = projectRepository.create(project);
+
+            List<Task> tasks = new ArrayList<>();
+            for(Task task : project.getTasks()){
+                task.setIdProject(project.getId());
+              Task result = taskRepository.create(task);
+             tasks.add(result);
+            }
+
+            project.setTasks(tasks);
+            return mapper.toDTO(project);
         } catch (RepositoryException exception) {
             String exceptionMessage = String.format("Add project by title= %s exception!", projectDTO.getTitle());
             log.error(exceptionMessage, exception);
@@ -60,6 +71,8 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectDTO update(ProjectDTO projectDTO) throws ServiceException {
         try {
             Project project = projectRepository.update(mapper.fromDTO(projectDTO));
+            List<Task> tasks = taskRepository.findAllTaskByProjectId(project.getId());
+            project.setTasks(tasks);
             return mapper.toDTO(project);
         } catch (RepositoryException exception) {
             String exceptionMessage = String.format("Update project by title= %s exception!", projectDTO.getTitle());

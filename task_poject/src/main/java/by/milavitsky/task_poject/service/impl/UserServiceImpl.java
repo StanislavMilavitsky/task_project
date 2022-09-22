@@ -11,7 +11,6 @@ import by.milavitsky.task_poject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -81,8 +80,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         try {
             long count = count();
             Page userPage = new Page(page, size, count);
-            List<User> users = new ArrayList<>(userRepository.findAll(userPage.getOffset(), userPage.getLimit()));
-            return users;
+            return new ArrayList<>(userRepository.findAll(userPage.getOffset(), userPage.getLimit()));
         } catch (DataAccessException exception) {
             String exceptionMessage = "Find all users service exception!";
             log.error(exceptionMessage, exception);

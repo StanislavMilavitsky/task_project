@@ -11,13 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.springframework.security.config.Customizer.withDefaults;
-
-
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfiguration {

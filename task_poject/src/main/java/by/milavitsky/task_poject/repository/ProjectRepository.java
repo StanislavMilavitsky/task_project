@@ -51,8 +51,8 @@ public interface ProjectRepository extends BaseRepository <Project> {
 
     /**
      * Find all projects not deleted
-     * @param offset
-     * @param limit
+     * @param offset offset
+     * @param limit limit
      * @return list of projects
      */
     List<Project> findAllNotDeleted(int offset, int limit);
