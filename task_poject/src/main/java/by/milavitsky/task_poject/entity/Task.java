@@ -1,4 +1,4 @@
-package by.milavitsky.task_poject.repository.entity;
+package by.milavitsky.task_poject.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,10 +16,12 @@ import java.io.Serializable;
 public class Task implements Serializable {
 
     @Positive(message = "Should be positive")
-    private Long taskId;
+    private Long id;
 
     @Size(min = 2, max = 100, message = "Title should be between 2 and 100 characters")
     private String taskDescription;
 
     private Boolean isDeleted;
+
+    private Long idProject;
 }

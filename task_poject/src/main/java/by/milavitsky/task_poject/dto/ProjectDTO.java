@@ -1,5 +1,6 @@
-package by.milavitsky.task_poject.repository.entity;
+package by.milavitsky.task_poject.dto;
 
+import by.milavitsky.task_poject.entity.Task;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,17 +11,17 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class Project implements Serializable {
+public class ProjectDTO implements Serializable {
 
     @Positive(message = "Should be positive")
-    private Long projectId;
+    private Long id;
 
     @NotEmpty(message = "Title should not be empty")
     @Size(min = 2, max = 20, message = "Title should be between 2 and 30 characters")
@@ -30,12 +31,16 @@ public class Project implements Serializable {
     private String projectDescription;
 
     @Positive(message = "Budget should be positive")
-    private Long budget;
+    private BigDecimal budget;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.s")
-    private LocalDate dateOfStart;
+    private String dateOfStart;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.s")
+    private String dateOfEnd;
 
     private Boolean isDeleted;
 
     private List<Task> tasks;
+    
 }
